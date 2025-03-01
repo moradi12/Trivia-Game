@@ -9,7 +9,8 @@ public enum Category {
     FLAGS("דגלים"),
     ENTERTAINMENT("בידור"),
     HISTORY("היסטוריה"),
-    SCIENCE("מדע");
+    SCIENCE("מדע"),
+    GEOGRAPHY ("גאוגרפיה");
 
     private final String displayName;
 

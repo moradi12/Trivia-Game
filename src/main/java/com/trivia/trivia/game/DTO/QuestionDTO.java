@@ -11,6 +11,6 @@ import java.util.List;
 public class QuestionDTO {
     private int id;
     private String text;
-    private List<String> options; // אפשרויות בסדר ערבובי
+    private List<String> options;
 
 }

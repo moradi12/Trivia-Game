@@ -20,7 +20,5 @@ import lombok.*;
         @JoinColumn(name = "question_id", nullable = false)
         private Question question;
 
-        @Column(nullable = false)
-        private String optionText;
     }
 

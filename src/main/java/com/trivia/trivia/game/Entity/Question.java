@@ -8,7 +8,6 @@ import java.util.List;
 @Table(name = "question")
 @Getter
 @Setter
-
 @Builder
 public class Question {
 
@@ -21,8 +20,8 @@ public class Question {
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "question_options", joinColumns = @JoinColumn(name = "question_id"))
+    @Column(name = "option_text", nullable = false)
     private List<String> options;
-
     @Column(nullable = false)
     private int correctIndex;
 

@@ -2,21 +2,29 @@ package com.trivia.trivia.game.Questions;
 
 import com.trivia.trivia.game.Entity.Category;
 import com.trivia.trivia.game.Entity.Question;
+import com.trivia.trivia.game.Repo.QuestionRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class    PoliticsQuestionRepository {
+public class PoliticsQuestionRepository {
 
     private final Set<Question> questions = new HashSet<>();
     private final Random random = new Random();
-    private final AtomicInteger questionIdCounter = new AtomicInteger(1);
+
+    // 1) Inject the JPA repository
+    private final QuestionRepository questionRepository;
+
+    // 2) Constructor injection
+    public PoliticsQuestionRepository(QuestionRepository questionRepository) {
+        this.questionRepository = questionRepository;
+    }
 
     @PostConstruct
     public void init() {
+        // Manually add your politics questions (in-memory)
         addQuestion(new Question(
                 null,
                 "מי מכהן כראש ממשלת ישראל נכון ל-2024?",
@@ -101,6 +109,9 @@ public class    PoliticsQuestionRepository {
                 3,
                 Category.POLITICS
         ));
+
+        // 3) Persist all newly added questions to the database
+        questionRepository.saveAll(questions);
     }
 
     /**
@@ -113,14 +124,14 @@ public class    PoliticsQuestionRepository {
         if (question.getCorrectIndex() < 0 || question.getCorrectIndex() >= 4) {
             throw new IllegalArgumentException("האינדקס של התשובה הנכונה חייב להיות בין 0 ל-3");
         }
-        if (question.getId() == null) {
-            question.setId(questionIdCounter.getAndIncrement());
-        }
+
+        // Remove the manual ID assignment. Let the DB auto-generate an ID.
+
         questions.add(question);
     }
 
     /**
-     * מחזירה את כל השאלות כרשימה בלתי ניתנת לשינוי.
+     * מחזירה את כל השאלות כרשימה חדשה (נפרדת).
      */
     public List<Question> getAllQuestions() {
         return new ArrayList<>(questions);

@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
     List<Question> findByCategory(Category category);
+    boolean existsByText(String text);
 }

@@ -1,5 +1,5 @@
 package com.trivia.trivia.game.Entity;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,6 +15,7 @@ public class Question {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @JsonProperty("question")
     @Column(nullable = false)
     private String text;
 
@@ -22,6 +23,7 @@ public class Question {
     @CollectionTable(name = "question_options", joinColumns = @JoinColumn(name = "question_id"))
     @Column(name = "option_text", nullable = false)
     private List<String> options;
+
     @Column(nullable = false)
     private int correctIndex;
 

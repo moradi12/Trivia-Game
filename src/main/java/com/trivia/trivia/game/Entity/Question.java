@@ -2,7 +2,6 @@ package com.trivia.trivia.game.Entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.util.List;
 @Entity
 @Table(name = "question")
@@ -31,19 +30,27 @@ public class Question {
     @Column(nullable = false)
     private Category category;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Difficulty difficulty;
+
+
     public Question() {
     }
 
     // Full-arguments constructor that matches the usage in your Repositories
-    public Question(Integer id, String text, List<String> options, int correctIndex, Category category) {
+    public Question(Integer id, String text, List<String> options, int correctIndex, Category category , Difficulty difficulty ) {
         this.id = id;
         this.text = text;
         this.options = options;
         this.correctIndex = correctIndex;
         this.category = category;
+        this.difficulty = difficulty;
+    }
+    public Difficulty getDifficulty() {
+        return this.difficulty;
     }
 
-    // Getters and Setters
 
     public Integer getId() {
         return id;
@@ -84,4 +91,5 @@ public class Question {
     public void setCategory(Category category) {
         this.category = category;
     }
+
 }

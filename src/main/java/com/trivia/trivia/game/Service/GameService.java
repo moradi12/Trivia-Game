@@ -8,17 +8,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class GameService {
 
     private static final Logger logger = LoggerFactory.getLogger(GameService.class);
     private static final int MAX_FAILURES = 3;
+    private static final int TIME_LIMIT_SECONDS = 30; // 30 seconds limit
 
     private int failureCount = 0;
     private int correctAnswers = 0;
     private Category selectedCategory = null;
+
+    // Map to track when a question was served (questionId -> start time in seconds)
+    private final Map<Integer, Integer> questionStartTimeMap = new ConcurrentHashMap<>();
 
     private final QuestionService questionService;
 
@@ -26,19 +32,14 @@ public class GameService {
         this.questionService = questionService;
     }
 
-    /**
-     * בחירת קטגוריית משחק - השחקן יקבל רק שאלות מקטגוריה זו
-     */
     public void selectCategory(Category category) {
         this.selectedCategory = category;
         this.failureCount = 0;
         this.correctAnswers = 0;
+        questionStartTimeMap.clear();
         logger.info("Category selected: {}. Game state reset.", category);
     }
 
-    /**
-     * עיבוד תשובת השחקן
-     */
     public GameResponse processAnswer(AnswerDTO answerDTO) {
         if (selectedCategory == null) {
             return new GameResponse(false, "Please select a category before playing!", null, failureCount);
@@ -49,14 +50,37 @@ public class GameService {
             return new GameResponse(false, "Game is already over!", null, failureCount);
         }
 
-        // שליפת השאלה
-        Question question = questionService.getQuestionById(answerDTO.getQuestionId()).orElse(null);
-        if (question == null) {
+        // Retrieve the recorded start time (in seconds) for the question.
+        Integer questionStartTime = questionStartTimeMap.get(answerDTO.getQuestionId());
+        if (questionStartTime != null) {
+            // Get current time in seconds.
+            int currentTimeSeconds = (int) (System.currentTimeMillis() / 1000);
+            int elapsedSeconds = currentTimeSeconds - questionStartTime;
+            if (elapsedSeconds > TIME_LIMIT_SECONDS) {
+                failureCount++;
+                logger.info("Answer timed out ({} seconds elapsed). Failures: {}/{}",
+                        elapsedSeconds, failureCount, MAX_FAILURES);
+                if (failureCount >= MAX_FAILURES) {
+                    logger.info("Game over! Maximum failures reached.");
+                    return new GameResponse(false, "Game over! Maximum failures reached.", null, failureCount);
+                }
+                // Return a response indicating time expired.
+                return new GameResponse(false, "Time's up! You did not answer within 30 seconds.", null, failureCount);
+            }
+        } else {
+            logger.error("No start time recorded for question ID {}.", answerDTO.getQuestionId());
+            return new GameResponse(false, "Invalid question timing data.", null, failureCount);
+        }
+
+        // Retrieve the question by its ID.
+        Optional<Question> questionOpt = questionService.getQuestionById(answerDTO.getQuestionId());
+        if (!questionOpt.isPresent()) {
             logger.error("Question ID {} not found!", answerDTO.getQuestionId());
             return new GameResponse(false, "Question not found.", null, failureCount);
         }
+        Question question = questionOpt.get();
 
-        // בדיקת התשובה
+        // Check whether the player's answer is correct.
         boolean isCorrect = (question.getCorrectIndex() == answerDTO.getSelectedAnswerIndex());
         if (!isCorrect) {
             failureCount++;
@@ -66,15 +90,20 @@ public class GameService {
             logger.info("Correct answer! Total correct answers: {}", correctAnswers);
         }
 
-        // בדיקה אם המשחק הסתיים
+        // Check if the game has ended.
         if (failureCount >= MAX_FAILURES) {
             logger.info("Game over! Maximum failures reached.");
             return new GameResponse(false, "Game over! Maximum failures reached.", null, failureCount);
         }
 
-        // שליפת שאלה אקראית מתוך הקטגוריה שנבחרה
+        // Fetch a random question from the selected category.
         Optional<Question> nextQuestionOpt = questionService.getRandomQuestionByCategory(selectedCategory);
         Question nextQuestion = nextQuestionOpt.orElse(null);
+        if (nextQuestion != null) {
+            // Record the start time (in seconds) for the next question.
+            int startTime = (int) (System.currentTimeMillis() / 1000);
+            questionStartTimeMap.put(nextQuestion.getId(), startTime);
+        }
 
         String message = isCorrect
                 ? "Correct answer! Here is your next question."
@@ -83,33 +112,23 @@ public class GameService {
         return new GameResponse(isCorrect, message, nextQuestion, failureCount);
     }
 
-    /**
-     * איפוס המשחק
-     */
     public void resetGame() {
         failureCount = 0;
         correctAnswers = 0;
         selectedCategory = null;
+        questionStartTimeMap.clear();
         logger.info("Game state reset.");
     }
 
-    /**
-     * החזרת כמות השגיאות
-     */
     public int getFailureCount() {
         return failureCount;
     }
 
-    /**
-     * החזרת מספר התשובות הנכונות
-     */
     public int getCorrectAnswers() {
         return correctAnswers;
     }
 
-    /**
-     * קבלת מצב המשחק
-     */
+
     public String getGameState() {
         return "Game Progress - Category: " + (selectedCategory != null ? selectedCategory : "Not selected")
                 + ", Correct: " + correctAnswers

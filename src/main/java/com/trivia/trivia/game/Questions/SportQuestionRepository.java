@@ -20,14 +20,10 @@ public class SportQuestionRepository {
     private final List<Question> questions = new ArrayList<>();
     private final Random random = new Random();
 
-    // Constructor injection
     public SportQuestionRepository(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
     }
 
-    /**
-     * Initializes the questions by loading them from a JSON file and saving them to the DB.
-     */
     @PostConstruct
     public void init() {
         try {
@@ -58,9 +54,6 @@ public class SportQuestionRepository {
         }
     }
 
-    /**
-     * Validates that the question has exactly 4 options and that the correct index is valid.
-     */
     private void validateQuestion(Question question) {
         if (question.getOptions() == null || question.getOptions().size() != EXPECTED_OPTIONS_COUNT) {
             throw new IllegalArgumentException("Each question must have exactly " + EXPECTED_OPTIONS_COUNT + " options");
@@ -70,23 +63,16 @@ public class SportQuestionRepository {
         }
     }
 
-    /**
-     * Returns the total number of questions loaded in memory (not necessarily in DB).
-     */
+
     public int getTotalQuestions() {
         return questions.size();
     }
 
-    /**
-     * Returns an unmodifiable list of all in-memory questions.
-     */
+
     public List<Question> getAllQuestions() {
         return Collections.unmodifiableList(questions);
     }
 
-    /**
-     * Returns a random question from the in-memory list.
-     */
     public Optional<Question> getRandomQuestion() {
         if (questions.isEmpty()) {
             return Optional.empty();

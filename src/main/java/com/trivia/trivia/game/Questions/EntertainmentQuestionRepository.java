@@ -1,6 +1,7 @@
 package com.trivia.trivia.game.Questions;
 
 import com.trivia.trivia.game.Entity.Category;
+import com.trivia.trivia.game.Entity.Difficulty;
 import com.trivia.trivia.game.Entity.Question;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
@@ -11,28 +12,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Component
 public class EntertainmentQuestionRepository {
 
-    // רשימת השאלות עבור קטגוריית בידור
     private final List<Question> questions = new ArrayList<>();
     private final Random random = new Random();
-    // הקצאת מזהה אוטומטית לשאלות
     private final AtomicInteger questionIdCounter = new AtomicInteger(1);
 
     @PostConstruct
     public void init() {
-        addQuestion(new Question(
-                null,
-                "איזה סרט זכה באוסקר בשנת 2020?",
-                Arrays.asList("1917", "Parasite", "Joker", "Once Upon a Time in Hollywood"),
-                1,
-                Category.ENTERTAINMENT
-        ));
-        addQuestion(new Question(
-                null,
-                "מי ניצח בתחרות אירוויזיון 2021?",
-                Arrays.asList("אוקראינה", "ישראל", "רומניה", "הולנד"),
-                0,
-                Category.ENTERTAINMENT
-        ));
+        addQuestion(new Question(null, "איזה סרט זכה באוסקר בשנת 2020?",
+                Arrays.asList("1917", "Parasite", "Joker", "Once Upon a Time in Hollywood"), 1, Category.ENTERTAINMENT, Difficulty.MEDIUM));
+
+        addQuestion(new Question(null, "מי ניצח בתחרות אירוויזיון 2021?",
+                Arrays.asList("אוקראינה", "ישראל", "רומניה", "הולנד"), 0, Category.ENTERTAINMENT, Difficulty.EASY));
     }
 
     private void addQuestion(Question question) {

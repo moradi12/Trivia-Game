@@ -20,7 +20,6 @@ public class QuestionService {
 
     private final QuestionRepository questionRepository;
     private final Random random = new Random();
-    private int failureCount = 0;
 
     public QuestionService(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
@@ -35,7 +34,6 @@ public class QuestionService {
     public int getQuestionCountByCategory(Category category) {
         return questionRepository.countByCategory(category);
     }
-
 
     // 3️⃣ Get a question by ID
     public Optional<Question> getQuestionById(int id) {
@@ -63,7 +61,6 @@ public class QuestionService {
         List<Question> questions = questionRepository.findByCategory(category);
         return questions.isEmpty() ? Optional.empty() : Optional.of(questions.get(random.nextInt(questions.size())));
     }
-    // 8️⃣ Get random question by difficulty
 
     // 7️⃣ Get all questions
     public List<Question> getAllQuestions() {
@@ -80,13 +77,12 @@ public class QuestionService {
         return questionRepository.findByCategory(category);
     }
 
-
-    // 1️⃣1️⃣ Check if a question exists
+    // 10️⃣ Check if a question exists
     public boolean questionExists(String text) {
         return questionRepository.existsByText(text);
     }
 
-    // 1️⃣2️⃣ Add a new question (with duplicate check)
+    // 11️⃣ Add a new question (with duplicate check)
     public Question addQuestion(Question question) {
         if (!questionExists(question.getText())) {
             return questionRepository.save(question);
@@ -95,7 +91,7 @@ public class QuestionService {
         }
     }
 
-    // 1️⃣3️⃣ Delete a question by ID
+    // 12️⃣ Delete a question by ID
     public boolean deleteQuestionById(int id) {
         if (questionRepository.existsById(id)) {
             questionRepository.deleteById(id);
@@ -104,7 +100,7 @@ public class QuestionService {
         return false;
     }
 
-    // 1️⃣4️⃣ Delete a question by text
+    // 13️⃣ Delete a question by text
     public boolean deleteQuestionByText(String text) {
         Optional<Question> question = questionRepository.findByText(text);
         if (question.isPresent()) {
@@ -114,14 +110,13 @@ public class QuestionService {
         return false;
     }
 
-    // 1️⃣5️⃣ Find most common category
+    // 14️⃣ Get question count by categories
     public Map<Category, Long> getQuestionCountByCategories() {
         return questionRepository.findAll().stream()
                 .collect(Collectors.groupingBy(Question::getCategory, Collectors.counting()));
     }
 
-
-    // 1️⃣7️⃣ Find similar questions (using Levenshtein Distance)
+    // 15️⃣ Find similar questions (using Levenshtein Distance)
     public List<Question> findSimilarQuestions(String text) {
         return questionRepository.findAll().stream()
                 .filter(q -> calculateLevenshteinDistance(q.getText(), text) < 5)
@@ -139,9 +134,8 @@ public class QuestionService {
                     dp[i][j] = i;
                 } else {
                     int cost = (s1.charAt(i - 1) == s2.charAt(j - 1)) ? 0 : 1;
-                    dp[i][j] = Math.min(Math.min(
-                                    dp[i - 1][j] + 1,
-                                    dp[i][j - 1] + 1),
+                    dp[i][j] = Math.min(
+                            Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1),
                             dp[i - 1][j - 1] + cost);
                 }
             }
@@ -149,35 +143,25 @@ public class QuestionService {
         return dp[s1.length()][s2.length()];
     }
 
-    // 1️⃣8️⃣ Reset failure count (for game tracking)
+    // 16️⃣ Reset game failure count (for game tracking)
     public void resetGame() {
-        failureCount = 0;
         logger.info("Game reset. Failure count set to 0.");
+        // (If needed, add additional reset logic here)
     }
 
-    public int getFailureCount() {
-        return failureCount;
-    }
-
-    // 1️⃣9️⃣ Clear all questions from the database
-    public void clearAllQuestions() {
-        questionRepository.deleteAll();
-    }
-
-
-    // 8️⃣ Get random question by difficulty
+    // 17️⃣ Get random question by difficulty
     public Optional<Question> getRandomQuestionByDifficulty(Difficulty difficulty) {
         List<Question> questions = questionRepository.findByDifficulty(difficulty);
-        if (questions.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(questions.get(random.nextInt(questions.size())));
+        return questions.isEmpty() ? Optional.empty() : Optional.of(questions.get(random.nextInt(questions.size())));
     }
 
+    // 18️⃣ Get questions by difficulty
     public List<Question> getQuestionsByDifficulty(Difficulty difficulty) {
         return questionRepository.findByDifficulty(difficulty);
     }
 
-
-
+    // 19️⃣ Clear all questions from the database
+    public void clearAllQuestions() {
+        questionRepository.deleteAll();
+    }
 }

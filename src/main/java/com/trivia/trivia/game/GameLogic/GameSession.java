@@ -3,9 +3,10 @@ package com.trivia.trivia.game.GameLogic;
 import com.trivia.trivia.game.Entity.GameMode;
 import com.trivia.trivia.game.Entity.Player;
 import com.trivia.trivia.game.Entity.Question;
+import lombok.Data;
 
 import java.util.List;
-
+@Data
 public class GameSession {
     private GameMode mode;
     private Player player1;

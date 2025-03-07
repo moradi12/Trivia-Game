@@ -1,0 +1,75 @@
+[
+{
+"id": null,
+"question": "מהי עיר הבירה של קנדה?",
+"options": ["טורונטו", "מונטריאול", "אוטווה", "ונקובר"],
+"correctIndex": 2,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של יפן?",
+"options": ["אוסקה", "קיוטו", "טוקיו", "הירושימה"],
+"correctIndex": 2,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של אוסטרליה?",
+"options": ["סידני", "מלבורן", "קנברה", "בריסביין"],
+"correctIndex": 2,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של ברזיל?",
+"options": ["ריו דה ז'ניירו", "ברזיליה", "סאו פאולו", "בלו הוריזונטה"],
+"correctIndex": 1,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של דרום אפריקה?",
+"options": ["יוהנסבורג", "דרבן", "קייפטאון", "פרטוריה"],
+"correctIndex": 3,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של מצרים?",
+"options": ["קהיר", "אלכסנדריה", "גיזה", "אסואן"],
+"correctIndex": 0,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של גרמניה?",
+"options": ["ברלין", "המבורג", "פרנקפורט", "מינכן"],
+"correctIndex": 0,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של איטליה?",
+"options": ["מילאנו", "רומא", "ונציה", "נאפולי"],
+"correctIndex": 1,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+},
+{
+"id": null,
+"question": "מהי עיר הבירה של הודו?",
+"options": ["מומבאי", "ניו דלהי", "בנגלור", "צ'נאי"],
+"correctIndex": 1,
+"category": "GEOGRAPHY",
+"difficulty": "EASY"
+}
+]
+

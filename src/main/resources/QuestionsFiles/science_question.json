@@ -1,0 +1,139 @@
+[
+
+  {
+    "id": null,
+    "question": "מהי היחידה הבסיסית של חומרים?",
+    "options": ["אטום", "מולקולה", "תא", "אלקטרון"],
+    "correctIndex": 0,
+    "category": "SCIENCE",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה מהבאים הוא אלמנט כימי?",
+    "options": ["מים", "מלח", "זהב", "סוכר"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזו פלנטה היא הקרובה ביותר לשמש?",
+    "options": ["ונוס", "מאדים", "מרקורי", "צדק"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה גז חיוני לנשימת בני אדם?",
+    "options": ["חמצן", "חנקן", "מימן", "פחמן דו-חמצני"],
+    "correctIndex": 0,
+    "category": "SCIENCE",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "כמה כרומוזומים יש בתא אנושי רגיל?",
+    "options": ["23", "32", "46", "64"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "מהו המרכיב העיקרי של השמש?",
+    "options": ["הליום", "מימן", "חמצן", "ברזל"],
+    "correctIndex": 1,
+    "category": "SCIENCE",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "מהי יחידת המידה של זרם חשמלי?",
+    "options": ["וואט", "וולט", "אמפר", "אוהם"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "מי גילה את כוח הכבידה?",
+    "options": ["גלילאו גליליי", "אייזיק ניוטון", "אלברט איינשטיין", "ניקולה טסלה"],
+    "correctIndex": 1,
+    "category": "SCIENCE",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "מהי הצורה הנפוצה ביותר של מים בכדור הארץ?",
+    "options": ["קרח", "מים נוזליים", "אדים", "שלג"],
+    "correctIndex": 1,
+    "category": "SCIENCE",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "באיזה איבר בגוף האדם מיוצר אינסולין?",
+    "options": ["כבד", "לבלב", "לב", "ריאות"],
+    "correctIndex": 1,
+    "category": "SCIENCE",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזה כוכב לכת מכונה 'כוכב הלכת האדום'?",
+    "options": ["צדק", "מאדים", "שבתאי", "נפטון"],
+    "correctIndex": 1,
+    "category": "SCIENCE",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה צבע מופיע כאשר אור לבן עובר דרך מנסרה ונשבר?",
+    "options": ["כחול", "ירוק", "סגול", "כל צבעי הקשת"],
+    "correctIndex": 3,
+    "category": "SCIENCE",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "מהו היסוד הכימי הנפוץ ביותר ביקום?",
+    "options": ["חמצן", "פחמן", "מימן", "הליום"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזו בלוטה אחראית על ייצור הורמוני הגדילה?",
+    "options": ["בלוטת התריס", "הלבלב", "בלוטת יותרת המוח", "הכבד"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "מהו שמו של החלקיק הנושא מטען חשמלי שלילי?",
+    "options": ["פרוטון", "ניוטרון", "אלקטרון", "יונון"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה סוג גל הוא גל קול?",
+    "options": ["אורכי", "רוחבי", "אלקטרומגנטי", "מכני"],
+    "correctIndex": 0,
+    "category": "SCIENCE",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו שכבה של האטמוספירה מגנה על כדור הארץ מקרינה אולטרה-סגולה?",
+    "options": ["טרופוספירה", "מזוספירה", "סטרטוספירה", "תרמוספירה"],
+    "correctIndex": 2,
+    "category": "SCIENCE",
+    "difficulty": "HARD"
+  }
+]

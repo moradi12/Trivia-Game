@@ -29,11 +29,16 @@ public class SportQuestionRepository {
         try {
             // 1) Load JSON
             ObjectMapper mapper = new ObjectMapper();
-            ClassPathResource resource = new ClassPathResource("sport_questions.json");
+            ClassPathResource resource = new ClassPathResource("QuestionsFiles/sport_questions.json");
             List<Question> loadedQuestions = mapper.readValue(
                     resource.getInputStream(),
                     new TypeReference<List<Question>>() {}
             );
+
+            if (loadedQuestions.isEmpty()) {
+                System.err.println("Warning: Science questions JSON file is empty.");
+                return;
+            }
 
             // 2) Validate
             for (Question question : loadedQuestions) {

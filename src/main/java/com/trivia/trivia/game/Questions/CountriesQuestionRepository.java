@@ -1,97 +1,73 @@
 package com.trivia.trivia.game.Questions;
 
-import com.trivia.trivia.game.Entity.Category;
-import com.trivia.trivia.game.Entity.Difficulty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trivia.trivia.game.Entity.Question;
+import com.trivia.trivia.game.Repo.QuestionRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class CountriesQuestionRepository {
 
+    private static final int EXPECTED_OPTIONS_COUNT = 4;
+
+    private final QuestionRepository questionRepository;
     private final List<Question> questions = new ArrayList<>();
     private final Random random = new Random();
-    private final AtomicInteger questionIdCounter = new AtomicInteger(1);
+
+    public CountriesQuestionRepository(QuestionRepository questionRepository) {
+        this.questionRepository = questionRepository;
+    }
 
     @PostConstruct
     public void init() {
-        addQuestion(new Question(null, "איזו מדינה היא הגדולה ביותר בשטח?",
-                Arrays.asList("רוסיה", "קנדה", "סין", "ארה\"ב"), 0, Category.COUNTRIES, Difficulty.EASY));
+        try {
+            // Load JSON file
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.READ_ENUMS_USING_TO_STRING, true);
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        addQuestion(new Question(null, "איזו מדינה נמצאת במרכז אירופה?",
-                Arrays.asList("גרמניה", "אוסטריה", "שוויץ", "הולנד"), 1, Category.COUNTRIES, Difficulty.EASY));
+            ClassPathResource resource = new ClassPathResource("QuestionsFiles/countries_questions.json");
+            List<Question> loadedQuestions = mapper.readValue(
+                    resource.getInputStream(),
+                    new TypeReference<List<Question>>() {}
+            );
 
-        addQuestion(new Question(null, "איזו מדינה ממוקמת ביבשת אפריקה?",
-                Arrays.asList("תאילנד", "מצרים", "פורטוגל", "פיליפינים"), 1, Category.COUNTRIES, Difficulty.EASY));
+            if (loadedQuestions.isEmpty()) {
+                System.err.println("Warning: Countries questions JSON file is empty.");
+                return;
+            }
 
-        addQuestion(new Question(null, "איזו מדינה ידועה בתור 'ארץ השמש העולה'?",
-                Arrays.asList("סין", "יפן", "דרום קוריאה", "ווייטנאם"), 1, Category.COUNTRIES, Difficulty.EASY));
+            // Validate
+            for (Question question : loadedQuestions) {
+                validateQuestion(question);
+            }
 
-        addQuestion(new Question(null, "באיזו מדינה נמצא מגדל אייפל?",
-                Arrays.asList("גרמניה", "איטליה", "צרפת", "ספרד"), 2, Category.COUNTRIES, Difficulty.EASY));
+            // Persist to MySQL
+            questionRepository.saveAll(loadedQuestions);
 
-        addQuestion(new Question(null, "איזו מדינה גובלת עם ארצות הברית מדרום?",
-                Arrays.asList("מקסיקו", "קנדה", "קובה", "ברזיל"), 0, Category.COUNTRIES, Difficulty.EASY));
+            // Store in-memory for quick retrieval
+            Collections.shuffle(loadedQuestions);
+            questions.addAll(loadedQuestions);
 
-        // Medium difficulty questions
-        addQuestion(new Question(null, "באיזו מדינה משתמשים במטבע 'ין'?",
-                Arrays.asList("סין", "יפן", "דרום קוריאה", "הודו"), 1, Category.COUNTRIES, Difficulty.MEDIUM));
-
-        addQuestion(new Question(null, "איזו מדינה היא המאוכלסת ביותר בעולם נכון ל-2024?",
-                Arrays.asList("הודו", "סין", "ארצות הברית", "ברזיל"), 0, Category.COUNTRIES, Difficulty.MEDIUM));
-
-        addQuestion(new Question(null, "איזו מדינה נחשבת לנייטרלית ולא משתתפת במלחמות?",
-                Arrays.asList("שוויץ", "שוודיה", "פורטוגל", "אירלנד"), 0, Category.COUNTRIES, Difficulty.MEDIUM));
-
-        addQuestion(new Question(null, "באיזו מדינה נמצאת הפירמידה הגדולה של גיזה?",
-                Arrays.asList("מצרים", "מקסיקו", "פרו", "סעודיה"), 0, Category.COUNTRIES, Difficulty.MEDIUM));
-
-        addQuestion(new Question(null, "איזו מדינה היא היצרנית הגדולה ביותר של קפה בעולם?",
-                Arrays.asList("קולומביה", "ברזיל", "ויאטנם", "אתיופיה"), 1, Category.COUNTRIES, Difficulty.MEDIUM));
-
-        // Hard difficulty questions
-        addQuestion(new Question(null, "באיזו מדינה נמצא האי הגדול ביותר בעולם?",
-                Arrays.asList("אוסטרליה", "גרינלנד", "קנדה", "אינדונזיה"), 1, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "כמה מדינות יש בעולם נכון ל-2024?",
-                Arrays.asList("190", "195", "200", "210"), 1, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "איזו מדינה מחזיקה בשטח האי מדגסקר?",
-                Arrays.asList("מדגסקר", "צרפת", "בריטניה", "דרום אפריקה"), 0, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "באיזו מדינה התקיימה המהפכה התעשייתית?",
-                Arrays.asList("ארה\"ב", "גרמניה", "בריטניה", "צרפת"), 2, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "באיזו מדינה נמצא ההר הגבוה ביותר בעולם?",
-                Arrays.asList("נפאל", "סין", "הודו", "טיבט"), 0, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "באיזו יבשת נמצאת ונצואלה?",
-                Arrays.asList("צפון אמריקה", "דרום אמריקה", "אפריקה", "אירופה"), 1, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "איזו מדינה באירופה היא בעלת הכי הרבה מדינות שכנות?",
-                Arrays.asList("גרמניה", "רוסיה", "צרפת", "אוסטריה"), 1, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "איזו מדינה מייצרת את רוב הזהב בעולם?",
-                Arrays.asList("דרום אפריקה", "סין", "רוסיה", "קנדה"), 1, Category.COUNTRIES, Difficulty.HARD));
-
-        addQuestion(new Question(null, "איזו מדינה חולקת את הגבול הארוך ביותר בעולם?",
-                Arrays.asList("ארצות הברית - מקסיקו", "רוסיה - סין", "ארצות הברית - קנדה", "הודו - פקיסטן"), 2, Category.COUNTRIES, Difficulty.HARD));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load countries questions from JSON file", e);
+        }
     }
 
-    private void addQuestion(Question question) {
-        if (question.getOptions() == null || question.getOptions().size() != 4) {
-            throw new IllegalArgumentException("כל שאלה חייבת להכיל בדיוק 4 אפשרויות");
+    private void validateQuestion(Question question) {
+        if (question.getOptions() == null || question.getOptions().size() != EXPECTED_OPTIONS_COUNT) {
+            throw new IllegalArgumentException("Each question must have exactly " + EXPECTED_OPTIONS_COUNT + " options");
         }
-        if (question.getCorrectIndex() < 0 || question.getCorrectIndex() >= 4) {
-            throw new IllegalArgumentException("האינדקס של התשובה הנכונה חייב להיות בין 0 ל-3");
+        if (question.getCorrectIndex() < 0 || question.getCorrectIndex() >= EXPECTED_OPTIONS_COUNT) {
+            throw new IllegalArgumentException("The correct answer index must be between 0 and " + (EXPECTED_OPTIONS_COUNT - 1));
         }
-        if (question.getId() == null) {
-            question.setId(questionIdCounter.getAndIncrement());
-        }
-        questions.add(question);
     }
 
     public List<Question> getAllQuestions() {
@@ -99,9 +75,7 @@ public class CountriesQuestionRepository {
     }
 
     public Optional<Question> getRandomQuestion() {
-        if (questions.isEmpty()) {
-            return Optional.empty();
-        }
+        if (questions.isEmpty()) return Optional.empty();
         int index = random.nextInt(questions.size());
         return Optional.of(questions.get(index));
     }

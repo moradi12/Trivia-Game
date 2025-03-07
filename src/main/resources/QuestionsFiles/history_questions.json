@@ -1,0 +1,82 @@
+[
+  {
+    "id": null,
+    "question": "מי היה המלך הראשון של ישראל?",
+    "options": ["שאול", "דוד", "משה", "סולימאן"],
+    "correctIndex": 0,
+    "category": "HISTORY",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "באיזה שנה נחתם הסכם שלום בין ישראל למצרים?",
+    "options": ["1978", "1979", "1980", "1981"],
+    "correctIndex": 1,
+    "category": "HISTORY",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "באיזו שנה פרצה מלחמת העצמאות של ישראל?",
+    "options": ["1946", "1947", "1948", "1950"],
+    "correctIndex": 2,
+    "category": "HISTORY",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו מלחמה התרחשה ב-1967?",
+    "options": ["מלחמת יום הכיפורים", "מלחמת סיני", "מלחמת ששת הימים", "מלחמת לבנון הראשונה"],
+    "correctIndex": 2,
+    "category": "HISTORY",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "מי היה ראש ממשלת ישראל בזמן מלחמת יום הכיפורים?",
+    "options": ["גולדה מאיר", "דוד בן גוריון", "מנחם בגין", "יצחק רבין"],
+    "correctIndex": 0,
+    "category": "HISTORY",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "באיזו שנה החלה מלחמת העולם הראשונה?",
+    "options": ["1912", "1914", "1916", "1918"],
+    "correctIndex": 1,
+    "category": "HISTORY",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזה אירוע גרם לפרוץ מלחמת העולם השנייה?",
+    "options": ["הפלישה של גרמניה לפולין", "המהפכה הרוסית", "הסכם ורסאי", "התקפת פרל הארבור"],
+    "correctIndex": 0,
+    "category": "HISTORY",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "מי היה נשיא ארה\"ב בזמן מלחמת האזרחים?",
+    "options": ["ג'ורג' וושינגטון", "אברהם לינקולן", "תיאודור רוזוולט", "תומאס ג'פרסון"],
+    "correctIndex": 1,
+    "category": "HISTORY",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו אימפריה קרסה בשנת 476 לספירה?",
+    "options": ["האימפריה הביזנטית", "האימפריה הרומית המערבית", "האימפריה הפרסית", "האימפריה המונגולית"],
+    "correctIndex": 1,
+    "category": "HISTORY",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "באיזו שנה נחתו בני אדם לראשונה על הירח?",
+    "options": ["1965", "1967", "1969", "1971"],
+    "correctIndex": 2,
+    "category": "HISTORY",
+    "difficulty": "MEDIUM"
+  }
+]

@@ -1,0 +1,42 @@
+[
+  {
+    "id": null,
+    "question": "מהו הסרט עם ההכנסות הגבוהות ביותר בכל הזמנים?",
+    "options": ["Avatar", "Titanic", "Avengers: Endgame", "Star Wars: The Force Awakens"],
+    "correctIndex": 0,
+    "category": "ENTERTAINMENT",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "מי זכה בעונה הראשונה של 'American Idol'?",
+    "options": ["Kelly Clarkson", "Carrie Underwood", "Fantasia Barrino", "David Cook"],
+    "correctIndex": 0,
+    "category": "ENTERTAINMENT",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה אמן ידוע כ'מלך הפופ'?",
+    "options": ["Elvis Presley", "Michael Jackson", "Prince", "Freddie Mercury"],
+    "correctIndex": 1,
+    "category": "ENTERTAINMENT",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה סרט זכה באוסקר לסרט הטוב ביותר בשנת 2020?",
+    "options": ["Parasite", "1917", "Joker", "Once Upon a Time in Hollywood"],
+    "correctIndex": 0,
+    "category": "ENTERTAINMENT",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו תוכנית טלוויזיה ידועה בזכות המשפט 'Bazinga'?",
+    "options": ["The Big Bang Theory", "Friends", "How I Met Your Mother", "Seinfeld"],
+    "correctIndex": 0,
+    "category": "ENTERTAINMENT",
+    "difficulty": "EASY"
+  }
+]

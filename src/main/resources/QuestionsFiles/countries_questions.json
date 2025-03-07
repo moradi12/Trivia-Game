@@ -1,0 +1,162 @@
+[
+  {
+    "id": null,
+    "question": "איזו מדינה היא הגדולה ביותר בשטח?",
+    "options": ["רוסיה", "קנדה", "סין", "ארה\"ב"],
+    "correctIndex": 0,
+    "category": "COUNTRIES",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה נמצאת במרכז אירופה?",
+    "options": ["גרמניה", "אוסטריה", "שוויץ", "הולנד"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה ממוקמת ביבשת אפריקה?",
+    "options": ["תאילנד", "מצרים", "פורטוגל", "פיליפינים"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה ידועה בתור 'ארץ השמש העולה'?",
+    "options": ["סין", "יפן", "דרום קוריאה", "ווייטנאם"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "באיזו מדינה נמצא מגדל אייפל?",
+    "options": ["גרמניה", "איטליה", "צרפת", "ספרד"],
+    "correctIndex": 2,
+    "category": "COUNTRIES",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה גובלת עם ארצות הברית מדרום?",
+    "options": ["מקסיקו", "קנדה", "קובה", "ברזיל"],
+    "correctIndex": 0,
+    "category": "COUNTRIES",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "באיזו מדינה משתמשים במטבע 'ין'?",
+    "options": ["סין", "יפן", "דרום קוריאה", "הודו"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה היא המאוכלסת ביותר בעולם נכון ל-2024?",
+    "options": ["הודו", "סין", "ארצות הברית", "ברזיל"],
+    "correctIndex": 0,
+    "category": "COUNTRIES",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה נחשבת לנייטרלית ולא משתתפת במלחמות?",
+    "options": ["שוויץ", "שוודיה", "פורטוגל", "אירלנד"],
+    "correctIndex": 0,
+    "category": "COUNTRIES",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "באיזו מדינה נמצאת הפירמידה הגדולה של גיזה?",
+    "options": ["מצרים", "מקסיקו", "פרו", "סעודיה"],
+    "correctIndex": 0,
+    "category": "COUNTRIES",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה היא היצרנית הגדולה ביותר של קפה בעולם?",
+    "options": ["קולומביה", "ברזיל", "ויאטנם", "אתיופיה"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "באיזו מדינה נמצא האי הגדול ביותר בעולם?",
+    "options": ["אוסטרליה", "גרינלנד", "קנדה", "אינדונזיה"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "כמה מדינות יש בעולם נכון ל-2024?",
+    "options": ["190", "195", "200", "210"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה מחזיקה בשטח האי מדגסקר?",
+    "options": ["מדגסקר", "צרפת", "בריטניה", "דרום אפריקה"],
+    "correctIndex": 0,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "באיזו מדינה התקיימה המהפכה התעשייתית?",
+    "options": ["ארה\"ב", "גרמניה", "בריטניה", "צרפת"],
+    "correctIndex": 2,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "באיזו מדינה נמצא ההר הגבוה ביותר בעולם?",
+    "options": ["נפאל", "סין", "הודו", "טיבט"],
+    "correctIndex": 0,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "באיזו יבשת נמצאת ונצואלה?",
+    "options": ["צפון אמריקה", "דרום אמריקה", "אפריקה", "אירופה"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה באירופה היא בעלת הכי הרבה מדינות שכנות?",
+    "options": ["גרמניה", "רוסיה", "צרפת", "אוסטריה"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה מייצרת את רוב הזהב בעולם?",
+    "options": ["דרום אפריקה", "סין", "רוסיה", "קנדה"],
+    "correctIndex": 1,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה חולקת את הגבול הארוך ביותר בעולם?",
+    "options": ["ארצות הברית - מקסיקו", "רוסיה - סין", "ארצות הברית - קנדה", "הודו - פקיסטן"],
+    "correctIndex": 2,
+    "category": "COUNTRIES",
+    "difficulty": "HARD"
+  }
+]

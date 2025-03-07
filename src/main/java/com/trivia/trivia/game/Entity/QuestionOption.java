@@ -4,21 +4,21 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
-    @Table(name = "question_options")
-    @Getter
-    @Setter
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    public class QuestionOption {
+@Table(name = "question_options")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class QuestionOption {
 
-        @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Integer id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-        @ManyToOne
-        @JoinColumn(name = "question_id", nullable = false)
-        private Question question;
+    @ManyToOne
+    @JoinColumn(name = "question_id", nullable = false)
+    private Question question;
 
-    }
+}
 

@@ -1,64 +1,69 @@
 package com.trivia.trivia.game.Questions;
 
-import com.trivia.trivia.game.Entity.Category;
-import com.trivia.trivia.game.Entity.Difficulty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trivia.trivia.game.Entity.Question;
+import com.trivia.trivia.game.Repo.QuestionRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 public class HistoryQuestionRepository {
 
+    private static final int EXPECTED_OPTIONS_COUNT = 4;
+
+    private final QuestionRepository questionRepository;
     private final List<Question> questions = new ArrayList<>();
     private final Random random = new Random();
-    private final AtomicInteger questionIdCounter = new AtomicInteger(1);
+
+    public HistoryQuestionRepository(QuestionRepository questionRepository) {
+        this.questionRepository = questionRepository;
+    }
 
     @PostConstruct
     public void init() {
-        addQuestion(new Question(null, "מי היה המלך הראשון של ישראל?",
-                Arrays.asList("שאול", "דוד", "משה", "סולימאן"), 0, Category.HISTORY, Difficulty.EASY));
+        try {
+            // Load JSON file
+            ObjectMapper mapper = new ObjectMapper();
+            ClassPathResource resource = new ClassPathResource("QuestionsFiles/history_questions.json");
+            List<Question> loadedQuestions = mapper.readValue(
+                    resource.getInputStream(),
+                    new TypeReference<List<Question>>() {}
+            );
 
-        addQuestion(new Question(null, "באיזה שנה נחתם הסכם שלום בין ישראל למצרים?",
-                Arrays.asList("1978", "1979", "1980", "1981"), 1, Category.HISTORY, Difficulty.MEDIUM));
+            if (loadedQuestions.isEmpty()) {
+                System.err.println("Warning: History questions JSON file is empty.");
+                return;
+            }
 
-        addQuestion(new Question(null, "באיזו שנה פרצה מלחמת העצמאות של ישראל?",
-                Arrays.asList("1946", "1947", "1948", "1950"), 2, Category.HISTORY, Difficulty.MEDIUM));
+            // Validate
+            for (Question question : loadedQuestions) {
+                validateQuestion(question);
+            }
 
-        addQuestion(new Question(null, "איזו מלחמה התרחשה ב-1967?",
-                Arrays.asList("מלחמת יום הכיפורים", "מלחמת סיני", "מלחמת ששת הימים", "מלחמת לבנון הראשונה"), 2, Category.HISTORY, Difficulty.HARD));
+            // Persist to MySQL
+            questionRepository.saveAll(loadedQuestions);
 
-        addQuestion(new Question(null, "מי היה ראש ממשלת ישראל בזמן מלחמת יום הכיפורים?",
-                Arrays.asList("גולדה מאיר", "דוד בן גוריון", "מנחם בגין", "יצחק רבין"), 0, Category.HISTORY, Difficulty.HARD));
+            // Store in-memory for quick retrieval
+            Collections.shuffle(loadedQuestions);
+            questions.addAll(loadedQuestions);
 
-        addQuestion(new Question(null, "באיזו שנה החלה מלחמת העולם הראשונה?",
-                Arrays.asList("1912", "1914", "1916", "1918"), 1, Category.HISTORY, Difficulty.HARD));
-
-        addQuestion(new Question(null, "איזה אירוע גרם לפרוץ מלחמת העולם השנייה?",
-                Arrays.asList("הפלישה של גרמניה לפולין", "המהפכה הרוסית", "הסכם ורסאי", "התקפת פרל הארבור"), 0, Category.HISTORY, Difficulty.HARD));
-
-        addQuestion(new Question(null, "מי היה נשיא ארה\"ב בזמן מלחמת האזרחים?",
-                Arrays.asList("ג'ורג' וושינגטון", "אברהם לינקולן", "תיאודור רוזוולט", "תומאס ג'פרסון"), 1, Category.HISTORY, Difficulty.MEDIUM));
-
-        addQuestion(new Question(null, "איזו אימפריה קרסה בשנת 476 לספירה?",
-                Arrays.asList("האימפריה הביזנטית", "האימפריה הרומית המערבית", "האימפריה הפרסית", "האימפריה המונגולית"), 1, Category.HISTORY, Difficulty.HARD));
-
-        addQuestion(new Question(null, "באיזו שנה נחתו בני אדם לראשונה על הירח?",
-                Arrays.asList("1965", "1967", "1969", "1971"), 2, Category.HISTORY, Difficulty.MEDIUM));
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load history questions from JSON file", e);
+        }
     }
 
-    private void addQuestion(Question question) {
-        if (question.getOptions() == null || question.getOptions().size() != 4) {
-            throw new IllegalArgumentException("כל שאלה חייבת להכיל בדיוק 4 אפשרויות");
+    private void validateQuestion(Question question) {
+        if (question.getOptions() == null || question.getOptions().size() != EXPECTED_OPTIONS_COUNT) {
+            throw new IllegalArgumentException("Each question must have exactly " + EXPECTED_OPTIONS_COUNT + " options");
         }
-        if (question.getCorrectIndex() < 0 || question.getCorrectIndex() >= 4) {
-            throw new IllegalArgumentException("האינדקס של התשובה הנכונה חייב להיות בין 0 ל-3");
+        if (question.getCorrectIndex() < 0 || question.getCorrectIndex() >= EXPECTED_OPTIONS_COUNT) {
+            throw new IllegalArgumentException("The correct answer index must be between 0 and " + (EXPECTED_OPTIONS_COUNT - 1));
         }
-        if (question.getId() == null) {
-            question.setId(questionIdCounter.getAndIncrement());
-        }
-        questions.add(question);
     }
 
     public List<Question> getAllQuestions() {

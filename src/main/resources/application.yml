@@ -12,7 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    show-sql: true       # Turn off printing SQL statements
+    show-sql: false       # Turn off printing SQL statements
     properties:
       hibernate:
         format_sql: true

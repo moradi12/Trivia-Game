@@ -1,20 +1,24 @@
 package com.trivia.trivia.game.Questions;
 
-import com.trivia.trivia.game.Entity.Category;
-import com.trivia.trivia.game.Entity.Difficulty;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.trivia.trivia.game.Entity.Question;
 import com.trivia.trivia.game.Repo.QuestionRepository;
 import jakarta.annotation.PostConstruct;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.util.*;
 
 @Component
 public class PoliticsQuestionRepository {
 
-    private final Set<Question> questions = new HashSet<>();
-    private final Random random = new Random();
+    private static final int EXPECTED_OPTIONS_COUNT = 4;
+
     private final QuestionRepository questionRepository;
+    private final List<Question> questions = new ArrayList<>();
+    private final Random random = new Random();
 
     public PoliticsQuestionRepository(QuestionRepository questionRepository) {
         this.questionRepository = questionRepository;
@@ -22,64 +26,53 @@ public class PoliticsQuestionRepository {
 
     @PostConstruct
     public void init() {
-        addQuestion(new Question(null, "מי מכהן כראש ממשלת ישראל נכון ל-2024?",
-                Arrays.asList("בנימין נתניהו", "יאיר לפיד", "בני גנץ", "אביגדור ליברמן"), 0, Category.POLITICS, Difficulty.EASY));
+        try {
+            // Load JSON file
+            ObjectMapper mapper = new ObjectMapper();
+            ClassPathResource resource = new ClassPathResource("QuestionsFiles/politics_question.json");
+            List<Question> loadedQuestions = mapper.readValue(
+                    resource.getInputStream(),
+                    new TypeReference<List<Question>>() {}
+            );
 
-        addQuestion(new Question(null, "איזה נושא מרכזי נמצא במחלוקת פוליטית בינלאומית כיום?",
-                Arrays.asList("שינויי אקלים", "ביטחון לאומי", "זכויות אדם", "סחר בינלאומי"), 0, Category.POLITICS, Difficulty.MEDIUM));
+            // Validate questions
+            for (Question question : loadedQuestions) {
+                validateQuestion(question);
+            }
 
-        addQuestion(new Question(null, "איזו מדינה מחזיקה בזכות וטו במועצת הביטחון של האו\"ם?",
-                Arrays.asList("גרמניה", "בריטניה", "קנדה", "אוסטרליה"), 1, Category.POLITICS, Difficulty.MEDIUM));
+            // Persist to MySQL
+            questionRepository.saveAll(loadedQuestions);
 
-        addQuestion(new Question(null, "כמה מדינות חברות באיחוד האירופי (נכון ל-2024)?",
-                Arrays.asList("25", "27", "30", "32"), 1, Category.POLITICS, Difficulty.HARD));
+            // Shuffle for variety and store in memory
+            Collections.shuffle(loadedQuestions);
+            questions.addAll(loadedQuestions);
 
-        addQuestion(new Question(null, "מי היה נשיא ארה\"ב בעת הכרזת העצמאות של ישראל ב-1948?",
-                Arrays.asList("הארי טרומן", "פרנקלין ד. רוזוולט", "דווייט אייזנהאואר", "לינדון ג'ונסון"), 0, Category.POLITICS, Difficulty.HARD));
-
-        addQuestion(new Question(null, "איזו מדינה היא בעלת הכלכלה הגדולה בעולם נכון ל-2024?",
-                Arrays.asList("סין", "ארצות הברית", "יפן", "גרמניה"), 1, Category.POLITICS, Difficulty.MEDIUM));
-
-        addQuestion(new Question(null, "איזה גוף אחראי על חקיקת חוקים במדינת ישראל?",
-                Arrays.asList("הכנסת", "בית המשפט העליון", "משרד המשפטים", "היועץ המשפטי לממשלה"), 0, Category.POLITICS, Difficulty.EASY));
-
-        addQuestion(new Question(null, "באיזו שנה הוקמה מדינת ישראל?",
-                Arrays.asList("1945", "1947", "1948", "1950"), 2, Category.POLITICS, Difficulty.EASY));
-
-        addQuestion(new Question(null, "מי יכול להגיש הצעת חוק בכנסת ישראל?",
-                Arrays.asList("רק חברי כנסת", "רק ראש הממשלה", "כל אזרח ישראלי", "חברי כנסת ומשרדי ממשלה"), 3, Category.POLITICS, Difficulty.MEDIUM));
-
-        addQuestion(new Question(null, "מהו שם הפרלמנט של בריטניה?",
-                Arrays.asList("הקונגרס", "הסנאט", "הפרלמנט הבריטי", "בית הנבחרים"), 2, Category.POLITICS, Difficulty.EASY));
-
-        addQuestion(new Question(null, "כמה זמן נמשכת כהונת נשיא ארצות הברית?",
-                Arrays.asList("3 שנים", "4 שנים", "5 שנים", "6 שנים"), 1, Category.POLITICS, Difficulty.EASY));
-
-        addQuestion(new Question(null, "איזה תפקיד פוליטי נבחר ישירות על ידי אזרחי ישראל?",
-                Arrays.asList("ראש ממשלה", "נשיא המדינה", "שר הביטחון", "חבר כנסת"), 3, Category.POLITICS, Difficulty.MEDIUM));
-
-        questionRepository.saveAll(questions);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to load politics questions from JSON file", e);
+        }
     }
 
-    private void addQuestion(Question question) {
-        if (question.getOptions() == null || question.getOptions().size() != 4) {
-            throw new IllegalArgumentException("כל שאלה חייבת להכיל בדיוק 4 אפשרויות");
+    private void validateQuestion(Question question) {
+        if (question.getOptions() == null || question.getOptions().size() != EXPECTED_OPTIONS_COUNT) {
+            throw new IllegalArgumentException("Each question must have exactly " + EXPECTED_OPTIONS_COUNT + " options");
         }
-        if (question.getCorrectIndex() < 0 || question.getCorrectIndex() >= 4) {
-            throw new IllegalArgumentException("האינדקס של התשובה הנכונה חייב להיות בין 0 ל-3");
+        if (question.getCorrectIndex() < 0 || question.getCorrectIndex() >= EXPECTED_OPTIONS_COUNT) {
+            throw new IllegalArgumentException("The correct answer index must be between 0 and " + (EXPECTED_OPTIONS_COUNT - 1));
         }
-        questions.add(question);
+    }
+
+    public int getTotalQuestions() {
+        return questions.size();
     }
 
     public List<Question> getAllQuestions() {
-        return new ArrayList<>(questions);
+        return Collections.unmodifiableList(questions);
     }
 
     public Optional<Question> getRandomQuestion() {
         if (questions.isEmpty()) {
             return Optional.empty();
         }
-        int index = random.nextInt(questions.size());
-        return Optional.of(new ArrayList<>(questions).get(index));
+        return Optional.of(questions.get(random.nextInt(questions.size())));
     }
 }

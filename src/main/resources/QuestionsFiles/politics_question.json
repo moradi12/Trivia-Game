@@ -1,0 +1,90 @@
+[
+  {
+    "id": null,
+    "question": "מי מכהן כראש ממשלת ישראל נכון ל-2024?",
+    "options": ["בנימין נתניהו", "יאיר לפיד", "בני גנץ", "אביגדור ליברמן"],
+    "correctIndex": 0,
+    "category": "POLITICS",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה נושא מרכזי נמצא במחלוקת פוליטית בינלאומית כיום?",
+    "options": ["שינויי אקלים", "ביטחון לאומי", "זכויות אדם", "סחר בינלאומי"],
+    "correctIndex": 0,
+    "category": "POLITICS",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה מחזיקה בזכות וטו במועצת הביטחון של האו\"ם?",
+    "options": ["גרמניה", "בריטניה", "קנדה", "אוסטרליה"],
+    "correctIndex": 1,
+    "category": "POLITICS",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "כמה מדינות חברות באיחוד האירופי (נכון ל-2024)?",
+    "options": ["25", "27", "30", "32"],
+    "correctIndex": 1,
+    "category": "POLITICS",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "מי היה נשיא ארה\"ב בעת הכרזת העצמאות של ישראל ב-1948?",
+    "options": ["הארי טרומן", "פרנקלין ד. רוזוולט", "דווייט אייזנהאואר", "לינדון ג'ונסון"],
+    "correctIndex": 0,
+    "category": "POLITICS",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזו מדינה היא בעלת הכלכלה הגדולה בעולם נכון ל-2024?",
+    "options": ["סין", "ארצות הברית", "יפן", "גרמניה"],
+    "correctIndex": 1,
+    "category": "POLITICS",
+    "difficulty": "MEDIUM"
+  },
+  {
+    "id": null,
+    "question": "איזה גוף אחראי על חקיקת חוקים במדינת ישראל?",
+    "options": ["הכנסת", "בית המשפט העליון", "משרד המשפטים", "היועץ המשפטי לממשלה"],
+    "correctIndex": 0,
+    "category": "POLITICS",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "באיזו שנה הוקמה מדינת ישראל?",
+    "options": ["1945", "1947", "1948", "1950"],
+    "correctIndex": 2,
+    "category": "POLITICS",
+    "difficulty": "EASY"
+  },
+  {
+    "id": null,
+    "question": "איזה אירוע הוביל לסיום המלחמה הקרה?",
+    "options": ["נפילת חומת ברלין", "חתימת הסכמי אוסלו", "מלחמת המפרץ", "ועידת יאלטה"],
+    "correctIndex": 0,
+    "category": "POLITICS",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "איזה מדינות נחשבות למעצמות גרעיניות נכון ל-2024?",
+    "options": ["צרפת, גרמניה, בריטניה", "רוסיה, ארה\"ב, סין", "יפן, הודו, ברזיל", "טורקיה, מצרים, סעודיה"],
+    "correctIndex": 1,
+    "category": "POLITICS",
+    "difficulty": "HARD"
+  },
+  {
+    "id": null,
+    "question": "מהו תפקידו המרכזי של האו\"ם?",
+    "options": ["ניהול הכלכלה העולמית", "שמירה על שלום וביטחון בינלאומי", "חקיקת חוקים למדינות", "פיקוח על בחירות דמוקרטיות"],
+    "correctIndex": 1,
+    "category": "POLITICS",
+    "difficulty": "HARD"
+  }
+]

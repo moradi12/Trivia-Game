@@ -22,19 +22,15 @@ public class GameService {
     private static final int TIME_LIMIT_SECONDS = 30; // 30 seconds limit
 
     private int failureCount = 0;
-    // For PVC mode, a single total correct counter is used.
     private int correctAnswers = 0;
-    // For PVP mode, separate scores are maintained.
     private int player1Correct = 0;
     private int player2Correct = 0;
 
     private Category selectedCategory = null;
 
-    // New fields for game mode and players:
-    private GameMode gameMode = GameMode.PVC;  // default mode is Player vs Computer
+    private GameMode gameMode = GameMode.PVC;
     private Player player1;
-    private Player player2; // used only in PvP; for PVC this remains null
-    // In PvP mode, we track whose turn it is (1 or 2)
+    private Player player2;
     private int currentPlayerTurn = 1;
 
     // Map to track when a question was served (questionId -> start time in seconds)
@@ -80,14 +76,12 @@ public class GameService {
             return new GameResponse(false, "Game is already over!", null, failureCount);
         }
 
-        // Retrieve and validate the recorded start time for the question.
         Integer questionStartTime = questionStartTimeMap.get(answerDTO.getQuestionId());
         if (questionStartTime == null) {
             logger.error("No start time recorded for question ID {}.", answerDTO.getQuestionId());
             return new GameResponse(false, "Invalid question timing data.", null, failureCount);
         }
 
-        // Remove the start time regardless of outcome to clean up memory.
         questionStartTimeMap.remove(answerDTO.getQuestionId());
 
         // Calculate elapsed time in seconds.

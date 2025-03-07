@@ -38,7 +38,6 @@ public class Question {
     public Question() {
     }
 
-    // Full-arguments constructor that matches the usage in your Repositories
     public Question(Integer id, String text, List<String> options, int correctIndex, Category category , Difficulty difficulty ) {
         this.id = id;
         this.text = text;

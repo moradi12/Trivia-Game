@@ -18,10 +18,8 @@ public class PvPGameRules implements GameRules {
             return;
         }
 
-        // Determine which player's turn it is.
         int currentTurn = session.getCurrentPlayerTurn();
 
-        // Check if the player's answer is correct.
         boolean isCorrect = (currentQuestion.getCorrectIndex() == answerDTO.getSelectedAnswerIndex());
         if (isCorrect) {
             if (currentTurn == 1) {
@@ -36,19 +34,16 @@ public class PvPGameRules implements GameRules {
             logger.info("Player {} answered incorrectly. Failure count: {}", currentTurn, session.getFailureCount());
         }
 
-        // Toggle turn for the next round.
         int nextTurn = (currentTurn == 1) ? 2 : 1;
         session.setCurrentPlayerTurn(nextTurn);
         logger.info("Next turn set to Player {}", nextTurn);
 
-        // Advance to the next question.
         session.getNextQuestion();  // This should update the current question index and reset any timing if needed.
         logger.info("Advanced to next question. Current question index: {}", session.getCurrentQuestionIndex());
     }
 
     @Override
     public boolean isGameOver(GameSession session) {
-        // The game is over if the failure count reaches or exceeds the maximum allowed.
         boolean gameOver = session.getFailureCount() >= session.getMaxFailures();
         if (gameOver) {
             logger.info("Game over: failure count {} has reached the maximum of {}.",

@@ -10,14 +10,14 @@ import java.util.List;
 public class GameSession {
     private GameMode mode;
     private Player player1;
-    private Player player2; // For PvP mode, can be null in PvC mode.
-    private int currentPlayerTurn; // 1 for player1, 2 for player2 (only used in PvP mode)
+    private Player player2;
+    private int currentPlayerTurn;
     private List<Question> questions;
     private int currentQuestionIndex;
     private int correctCount;
     private int failureCount;
     private int maxFailures;
-    private long questionStartTime; // Timestamp for when the current question was presented
+    private long questionStartTime;
 
     private int player1Score;
     private int player2Score;
@@ -29,7 +29,7 @@ public class GameSession {
         this.player2 = player2;
         this.questions = questions;
         this.maxFailures = maxFailures;
-        this.currentPlayerTurn = 1; // start with player1
+        this.currentPlayerTurn = 1;
         this.currentQuestionIndex = 0;
         this.correctCount = 0;
         this.failureCount = 0;
@@ -38,7 +38,6 @@ public class GameSession {
         this.player2Score = 0;
     }
 
-    // Get the current question from the list.
     public Question getCurrentQuestion() {
         if (questions != null && currentQuestionIndex < questions.size()) {
             return questions.get(currentQuestionIndex);
@@ -46,8 +45,6 @@ public class GameSession {
         return null;
     }
 
-    // Advances to the next question, resets the start time, and returns it.
-    // Returns null if no more questions are available.
     public Question getNextQuestion() {
         currentQuestionIndex++;
         if (questions != null && currentQuestionIndex < questions.size()) {
@@ -57,7 +54,6 @@ public class GameSession {
         return null;
     }
 
-    // Getters and setters for all fields.
     public GameMode getMode() {
         return mode;
     }

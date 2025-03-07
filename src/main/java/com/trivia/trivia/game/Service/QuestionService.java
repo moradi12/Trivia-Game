@@ -1,5 +1,4 @@
 package com.trivia.trivia.game.Service;
-
 import com.trivia.trivia.game.Entity.Category;
 import com.trivia.trivia.game.Entity.Difficulty;
 import com.trivia.trivia.game.Entity.Question;
@@ -46,7 +45,6 @@ public class QuestionService {
         return allQuestions.isEmpty() ? Optional.empty() : Optional.of(allQuestions.get(random.nextInt(allQuestions.size())));
     }
 
-    // 5️⃣ Get multiple random questions
     public List<Question> getRandomQuestions(int count) {
         List<Question> allQuestions = questionRepository.findAll();
         if (allQuestions.size() <= count) {
@@ -56,33 +54,25 @@ public class QuestionService {
         return allQuestions.subList(0, count);
     }
 
-    // 6️⃣ Get random question by category
     public Optional<Question> getRandomQuestionByCategory(Category category) {
         List<Question> questions = questionRepository.findByCategory(category);
         return questions.isEmpty() ? Optional.empty() : Optional.of(questions.get(random.nextInt(questions.size())));
     }
-
-    // 7️⃣ Get all questions
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
-
-    // 8️⃣ Get paginated questions
     public Page<Question> getQuestionsPaged(int page, int size) {
         return questionRepository.findAll(PageRequest.of(page, size));
     }
 
-    // 9️⃣ Get questions by category
     public List<Question> getQuestionsByCategory(Category category) {
         return questionRepository.findByCategory(category);
     }
 
-    // 10️⃣ Check if a question exists
     public boolean questionExists(String text) {
         return questionRepository.existsByText(text);
     }
 
-    // 11️⃣ Add a new question (with duplicate check)
     public Question addQuestion(Question question) {
         if (!questionExists(question.getText())) {
             return questionRepository.save(question);
@@ -91,7 +81,6 @@ public class QuestionService {
         }
     }
 
-    // 12️⃣ Delete a question by ID
     public boolean deleteQuestionById(int id) {
         if (questionRepository.existsById(id)) {
             questionRepository.deleteById(id);
@@ -100,7 +89,6 @@ public class QuestionService {
         return false;
     }
 
-    // 13️⃣ Delete a question by text
     public boolean deleteQuestionByText(String text) {
         Optional<Question> question = questionRepository.findByText(text);
         if (question.isPresent()) {
@@ -110,13 +98,10 @@ public class QuestionService {
         return false;
     }
 
-    // 14️⃣ Get question count by categories
     public Map<Category, Long> getQuestionCountByCategories() {
         return questionRepository.findAll().stream()
                 .collect(Collectors.groupingBy(Question::getCategory, Collectors.counting()));
     }
-
-    // 15️⃣ Find similar questions (using Levenshtein Distance)
     public List<Question> findSimilarQuestions(String text) {
         return questionRepository.findAll().stream()
                 .filter(q -> calculateLevenshteinDistance(q.getText(), text) < 5)
@@ -143,24 +128,20 @@ public class QuestionService {
         return dp[s1.length()][s2.length()];
     }
 
-    // 16️⃣ Reset game failure count (for game tracking)
     public void resetGame() {
         logger.info("Game reset. Failure count set to 0.");
         // (If needed, add additional reset logic here)
     }
 
-    // 17️⃣ Get random question by difficulty
     public Optional<Question> getRandomQuestionByDifficulty(Difficulty difficulty) {
         List<Question> questions = questionRepository.findByDifficulty(difficulty);
         return questions.isEmpty() ? Optional.empty() : Optional.of(questions.get(random.nextInt(questions.size())));
     }
 
-    // 18️⃣ Get questions by difficulty
     public List<Question> getQuestionsByDifficulty(Difficulty difficulty) {
         return questionRepository.findByDifficulty(difficulty);
     }
 
-    // 19️⃣ Clear all questions from the database
     public void clearAllQuestions() {
         questionRepository.deleteAll();
     }

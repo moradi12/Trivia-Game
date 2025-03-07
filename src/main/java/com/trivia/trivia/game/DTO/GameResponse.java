@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class GameResponse {
-    private boolean correct;         // true if the submitted answer was correct
-    private String message;          // feedback message for the player
-    private Question nextQuestion;   // the next question from the same category (if available)
-    private int failureCount;        // current number of failures
+    private boolean correct;
+    private String message;
+    private Question nextQuestion;
+    private int failureCount;
 
     public GameResponse(boolean correct, String message, Question nextQuestion, int failureCount) {
         this.correct = correct;

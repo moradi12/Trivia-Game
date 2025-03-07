@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PvCGameRules implements GameRules {
-
     private static final Logger logger = LoggerFactory.getLogger(PvCGameRules.class);
 
     @Override
@@ -39,7 +38,6 @@ public class PvCGameRules implements GameRules {
 
     @Override
     public boolean isGameOver(GameSession session) {
-        // The game is over if the failure count reaches or exceeds the maximum allowed.
         boolean gameOver = session.getFailureCount() >= session.getMaxFailures();
         if (gameOver) {
             logger.info("Game over reached. Failure count: {}, Maximum allowed: {}",

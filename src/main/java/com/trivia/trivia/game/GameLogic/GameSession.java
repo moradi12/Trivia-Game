@@ -4,9 +4,12 @@ import com.trivia.trivia.game.Entity.GameMode;
 import com.trivia.trivia.game.Entity.Player;
 import com.trivia.trivia.game.Entity.Question;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @Data
+@NoArgsConstructor
 public class GameSession {
     private GameMode mode;
     private Player player1;
@@ -18,15 +21,13 @@ public class GameSession {
     private int failureCount;
     private int maxFailures;
     private long questionStartTime;
-
     private int player1Score;
     private int player2Score;
 
-    // Constructor
-    public GameSession(GameMode mode, Player player1, Player player2, List<Question> questions, int maxFailures) {
+    public GameSession(GameMode mode, String player1Name, String player2Name, List<Question> questions, int maxFailures) {
         this.mode = mode;
-        this.player1 = player1;
-        this.player2 = player2;
+        this.player1 = new Player(0, player1Name, 0);  // Initialize Player 1
+        this.player2 = (player2Name != null && !player2Name.trim().isEmpty()) ? new Player(0, player2Name, 0) : null;
         this.questions = questions;
         this.maxFailures = maxFailures;
         this.currentPlayerTurn = 1;
@@ -48,107 +49,9 @@ public class GameSession {
     public Question getNextQuestion() {
         currentQuestionIndex++;
         if (questions != null && currentQuestionIndex < questions.size()) {
-            questionStartTime = System.currentTimeMillis();
+            questionStartTime = System.currentTimeMillis(); // Reset timer
             return questions.get(currentQuestionIndex);
         }
-        return null;
-    }
-
-    public GameMode getMode() {
-        return mode;
-    }
-
-    public void setMode(GameMode mode) {
-        this.mode = mode;
-    }
-
-    public Player getPlayer1() {
-        return player1;
-    }
-
-    public void setPlayer1(Player player1) {
-        this.player1 = player1;
-    }
-
-    public Player getPlayer2() {
-        return player2;
-    }
-
-    public void setPlayer2(Player player2) {
-        this.player2 = player2;
-    }
-
-    public int getCurrentPlayerTurn() {
-        return currentPlayerTurn;
-    }
-
-    public void setCurrentPlayerTurn(int currentPlayerTurn) {
-        this.currentPlayerTurn = currentPlayerTurn;
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
-        this.currentQuestionIndex = 0; // reset index when new list is set
-    }
-
-    public int getCurrentQuestionIndex() {
-        return currentQuestionIndex;
-    }
-
-    public void setCurrentQuestionIndex(int currentQuestionIndex) {
-        this.currentQuestionIndex = currentQuestionIndex;
-    }
-
-    public int getCorrectCount() {
-        return correctCount;
-    }
-
-    public void setCorrectCount(int correctCount) {
-        this.correctCount = correctCount;
-    }
-
-    public int getFailureCount() {
-        return failureCount;
-    }
-
-    public void setFailureCount(int failureCount) {
-        this.failureCount = failureCount;
-    }
-
-    public int getMaxFailures() {
-        return maxFailures;
-    }
-
-    public void setMaxFailures(int maxFailures) {
-        this.maxFailures = maxFailures;
-    }
-
-    public long getQuestionStartTime() {
-        return questionStartTime;
-    }
-
-    public void setQuestionStartTime(long questionStartTime) {
-        this.questionStartTime = questionStartTime;
-    }
-
-    // Getters and setters for player scores.
-    public int getPlayer1Score() {
-        return player1Score;
-    }
-
-    public void setPlayer1Score(int player1Score) {
-        this.player1Score = player1Score;
-    }
-
-    public int getPlayer2Score() {
-        return player2Score;
-    }
-
-    public void setPlayer2Score(int player2Score) {
-        this.player2Score = player2Score;
+        return null; // No more questions
     }
 }

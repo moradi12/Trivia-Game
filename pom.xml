@@ -7,6 +7,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<!-- Parent: Spring Boot Starter Parent -->
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
@@ -19,23 +20,11 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>trivia-game</name>
 	<description>Demo project for Spring Boot</description>
-	<url/>
-
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 
 	<properties>
 		<java.version>17</java.version>
+		<!-- Make sure you have the same Lombok version as the annotationProcessorPaths below -->
+		<lombok.version>1.18.26</lombok.version>
 	</properties>
 
 	<dependencies>
@@ -58,22 +47,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Lombok: Use scope=provided so it's not included in your final jar -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
-		</dependency>
-
-
-		<!-- For Maven -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<version>1.18.26</version>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
-
-
 
 		<!-- Spring Boot test -->
 		<dependency>
@@ -85,33 +65,34 @@
 
 	<build>
 		<plugins>
-			<!-- Compiler plugin to enable annotation processing -->
+
+			<!-- Maven Compiler Plugin: for Java 17 + Lombok annotation processing -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.1</version>
 				<configuration>
+					<!-- Make sure source/target match your <java.version> -->
+					<source>17</source>
+					<target>17</target>
+
+					<!-- Tells the compiler to run Lombok as an annotation processor -->
 					<annotationProcessorPaths>
 						<path>
 							<groupId>org.projectlombok</groupId>
 							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
 						</path>
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 
-			<!-- Spring Boot Maven plugin (excluding Lombok from final jar) -->
+			<!-- Spring Boot Maven plugin (No need to exclude Lombok if scope=provided) -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
 

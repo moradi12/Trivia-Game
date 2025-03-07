@@ -8,7 +8,6 @@ import com.trivia.trivia.game.Entity.Question;
 import com.trivia.trivia.game.Repo.QuestionRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -43,8 +42,7 @@ public class QuestionLoader {
 
         for (String fileName : CATEGORIES) {
             loadQuestionsFromJson(mapper, fileName);
-        }
-    }
+        }}
 
     private void loadQuestionsFromJson(ObjectMapper mapper, String fileName) {
         try {
@@ -99,8 +97,7 @@ public class QuestionLoader {
 
     public Optional<Question> getRandomQuestionByDifficulty(Difficulty difficulty) {
         List<Question> filtered = questions.stream()
-                .filter(q -> q.getDifficulty() == difficulty)
-                .collect(Collectors.toList());
+                .filter(q -> q.getDifficulty() == difficulty).collect(Collectors.toList());
         if (filtered.isEmpty()) {
             return Optional.empty();
         }

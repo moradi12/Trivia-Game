@@ -2,6 +2,7 @@ package com.trivia.trivia.game.Service;
 
 import com.trivia.trivia.game.DTO.AnswerDTO;
 import com.trivia.trivia.game.DTO.GameResponse;
+import com.trivia.trivia.game.DTO.QuestionDTO;
 import com.trivia.trivia.game.Entity.Category;
 import com.trivia.trivia.game.Entity.GameMode;  // New enum: PVP, PVC
 import com.trivia.trivia.game.Entity.Player;    // New simple Player class
@@ -89,7 +90,8 @@ public class GameService {
         int elapsedSeconds = currentTimeSeconds - questionStartTime;
         if (elapsedSeconds > TIME_LIMIT_SECONDS) {
             failureCount++;
-            logger.info("Answer timed out ({} seconds elapsed). Failures: {}/{}", elapsedSeconds, failureCount, MAX_FAILURES);
+            logger.info("Answer timed out ({} seconds elapsed). Failures: {}/{}",
+                    elapsedSeconds, failureCount, MAX_FAILURES);
             if (failureCount >= MAX_FAILURES) {
                 logger.info("Game over! Maximum failures reached.");
                 return new GameResponse(false, "Game over! Maximum failures reached.", null, failureCount);
@@ -107,14 +109,15 @@ public class GameService {
 
         // Check whether the player's answer is correct.
         boolean isCorrect = (question.getCorrectIndex() == answerDTO.getSelectedAnswerIndex());
-        String message = "";
+        String message;
 
         if (gameMode == GameMode.PVP) {
             // In PvP mode, assume the answer is coming from the player whose turn it is.
             int answeringPlayer = currentPlayerTurn;
             if (!isCorrect) {
                 failureCount++;
-                logger.info("Player {} answered incorrectly. Failures: {}/{}", answeringPlayer, failureCount, MAX_FAILURES);
+                logger.info("Player {} answered incorrectly. Failures: {}/{}",
+                        answeringPlayer, failureCount, MAX_FAILURES);
             } else {
                 if (answeringPlayer == 1) {
                     player1Correct++;
@@ -123,7 +126,7 @@ public class GameService {
                 }
                 logger.info("Player {} answered correctly.", answeringPlayer);
             }
-            // Toggle turn for next round.
+            // Toggle turn for the next round.
             currentPlayerTurn = (answeringPlayer == 1) ? 2 : 1;
             message = (isCorrect
                     ? "Player " + answeringPlayer + " answered correctly! "
@@ -158,7 +161,21 @@ public class GameService {
             questionStartTimeMap.put(nextQuestion.getId(), startTime);
         }
 
-        return new GameResponse(isCorrect, message, nextQuestion, failureCount);
+        // Convert 'Question' entity to 'QuestionDTO' (to match GameResponse signature).
+        QuestionDTO nextQuestionDto = null;
+        if (nextQuestion != null) {
+            nextQuestionDto = new QuestionDTO(
+                    nextQuestion.getId(),
+                    nextQuestion.getText(),
+                    nextQuestion.getOptions(),
+                    nextQuestion.getCorrectIndex(),
+                    nextQuestion.getCategory(),
+                    nextQuestion.getDifficulty()
+            );
+        }
+
+        // Return a GameResponse with a QuestionDTO (instead of a Question).
+        return new GameResponse(isCorrect, message, nextQuestionDto, failureCount);
     }
 
     public void resetGame() {

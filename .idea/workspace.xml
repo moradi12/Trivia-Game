@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="8e768e87-e2df-4ad7-a7ff-64131c25eb2b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Advice/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Controller/GameController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Controller/QuestionController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/DTO/AnswerDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/DTO/GameResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/DTO/QuestionDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Entity/Category.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Entity/Difficulty.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Entity/GameMode.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Entity/Player.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Entity/Question.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Entity/QuestionOption.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/GameLogic/GameRules.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/GameLogic/GameSession.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/GameLogic/PvCGameRules.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/GameLogic/PvPGameRules.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Questions/QuestionLoader.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Repo/QuestionRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Service/GameService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/Service/QuestionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/trivia/trivia/game/TriviaGameApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/QuestionsFiles/capital_cities_question.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/QuestionsFiles/countries_questions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/QuestionsFiles/entertainment_questions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/QuestionsFiles/history_questions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/QuestionsFiles/politics_questions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/QuestionsFiles/science_questions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/QuestionsFiles/sport_questions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/trivia/trivia/game/TriviaGameApplicationTests.java" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "moradi12"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/moradi12/Trivia-Game.git",
+    "accountId": "69d7fbc1-a673-442d-938f-52fab63b128b"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 3
+}]]></component>
+  <component name="ProjectId" id="2tz7qCc9QaefxSkl9wRBtFhdOEt" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/tamir/OneDrive/Desktop/trivia-game/backend",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8e768e87-e2df-4ad7-a7ff-64131c25eb2b" name="Changes" comment="" />
+      <created>1741343238859</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1741343238859</updated>
+      <workItem from="1741343240140" duration="32000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

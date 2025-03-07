@@ -4,8 +4,8 @@ import com.trivia.trivia.game.DTO.AnswerDTO;
 import com.trivia.trivia.game.DTO.GameResponse;
 import com.trivia.trivia.game.DTO.QuestionDTO;
 import com.trivia.trivia.game.Entity.Category;
-import com.trivia.trivia.game.Entity.GameMode;  // New enum: PVP, PVC
-import com.trivia.trivia.game.Entity.Player;    // New simple Player class
+import com.trivia.trivia.game.Entity.GameMode;
+import com.trivia.trivia.game.Entity.Player;
 import com.trivia.trivia.game.Entity.Question;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,21 +20,31 @@ public class GameService {
 
     private static final Logger logger = LoggerFactory.getLogger(GameService.class);
     private static final int MAX_FAILURES = 3;
-    private static final int TIME_LIMIT_SECONDS = 30; // 30 seconds limit
+    private static final int TIME_LIMIT_SECONDS = 30;
 
+    // Track how many failures so far; 3 means game over
     private int failureCount = 0;
+    // Track how many correct answers in PvC mode
     private int correctAnswers = 0;
+    // Track how many correct answers for each player in PvP mode
     private int player1Correct = 0;
     private int player2Correct = 0;
 
-    private Category selectedCategory = null;
+    // Category is set once from the main menu
+    private Category selectedCategory;
 
+    // Game mode: PVC or PVP
     private GameMode gameMode = GameMode.PVC;
+    // Players
     private Player player1;
     private Player player2;
+    // Whose turn it is in PvP
     private int currentPlayerTurn = 1;
 
-    // Map to track when a question was served (questionId -> start time in seconds)
+    /**
+     * Map to track question start times: (questionId -> start time in seconds).
+     * Once an answer is submitted, we remove that question’s entry.
+     */
     private final Map<Integer, Integer> questionStartTimeMap = new ConcurrentHashMap<>();
 
     private final QuestionService questionService;
@@ -45,74 +55,81 @@ public class GameService {
 
     /**
      * Starts a new game session.
-     * For PVC mode, player2 can be passed as null.
+     *
+     * @param mode      Game mode (PVC or PVP).
+     * @param category  Category of questions.
+     * @param player1   The first player.
+     * @param player2   The second player (may be null if mode is PVC).
      */
     public void startGame(GameMode mode, Category category, Player player1, Player player2) {
         this.gameMode = mode;
         this.selectedCategory = category;
         this.player1 = player1;
-        this.player2 = player2; // For PVC mode, this may be null.
+        this.player2 = player2;
+
+        // Reset counters
         this.failureCount = 0;
         this.correctAnswers = 0;
         this.player1Correct = 0;
         this.player2Correct = 0;
         this.currentPlayerTurn = 1;
+
         questionStartTimeMap.clear();
+
         logger.info("Game started in {} mode with category {}.", mode, category);
     }
 
+    /**
+     * Processes an answer from the client.
+     *
+     * @param answerDTO Contains the questionId and selectedAnswerIndex.
+     * @return GameResponse indicating correctness, next question, and relevant info.
+     */
     public GameResponse processAnswer(AnswerDTO answerDTO) {
-        // Validate the incoming answer data.
-        if (answerDTO == null) {
-            logger.error("AnswerDTO is null.");
-            return new GameResponse(false, "Invalid answer data.", null, failureCount);
-        }
 
-        if (selectedCategory == null) {
-            return new GameResponse(false, "Please select a category before playing!", null, failureCount);
-        }
-
+        // If game is already over due to failures, notify the client
         if (failureCount >= MAX_FAILURES) {
-            logger.warn("Game over! Player is still attempting to answer.");
+            logger.warn("Game over! Maximum failures reached.");
             return new GameResponse(false, "Game is already over!", null, failureCount);
         }
 
-        Integer questionStartTime = questionStartTimeMap.get(answerDTO.getQuestionId());
+        // Retrieve and remove the question’s start time from the map
+        Integer questionStartTime = questionStartTimeMap.remove(answerDTO.getQuestionId());
         if (questionStartTime == null) {
             logger.error("No start time recorded for question ID {}.", answerDTO.getQuestionId());
-            return new GameResponse(false, "Invalid question timing data.", null, failureCount);
+            return new GameResponse(
+                    false,
+                    "Invalid question timing data or you are re-answering a finished question.",
+                    null,
+                    failureCount
+            );
         }
 
-        questionStartTimeMap.remove(answerDTO.getQuestionId());
-
-        // Calculate elapsed time in seconds.
+        // Check timing
         int currentTimeSeconds = (int) (System.currentTimeMillis() / 1000);
         int elapsedSeconds = currentTimeSeconds - questionStartTime;
         if (elapsedSeconds > TIME_LIMIT_SECONDS) {
             failureCount++;
-            logger.info("Answer timed out ({} seconds elapsed). Failures: {}/{}",
-                    elapsedSeconds, failureCount, MAX_FAILURES);
+            logger.info("Answer timed out ({} seconds). Failures: {}/{}", elapsedSeconds, failureCount, MAX_FAILURES);
             if (failureCount >= MAX_FAILURES) {
-                logger.info("Game over! Maximum failures reached.");
                 return new GameResponse(false, "Game over! Maximum failures reached.", null, failureCount);
             }
             return new GameResponse(false, "Time's up! You did not answer within 30 seconds.", null, failureCount);
         }
 
-        // Retrieve the question by its ID.
+        // Check correctness
         Optional<Question> questionOpt = questionService.getQuestionById(answerDTO.getQuestionId());
         if (!questionOpt.isPresent()) {
-            logger.error("Question ID {} not found!", answerDTO.getQuestionId());
+            logger.error("Question ID {} not found in DB!", answerDTO.getQuestionId());
             return new GameResponse(false, "Question not found.", null, failureCount);
         }
         Question question = questionOpt.get();
-
-        // Check whether the player's answer is correct.
         boolean isCorrect = (question.getCorrectIndex() == answerDTO.getSelectedAnswerIndex());
-        String message;
 
+        // Build response message
+        String message;
         if (gameMode == GameMode.PVP) {
-            // In PvP mode, assume the answer is coming from the player whose turn it is.
+            // In PvP, track current player's correctness
             int answeringPlayer = currentPlayerTurn;
             if (!isCorrect) {
                 failureCount++;
@@ -126,42 +143,43 @@ public class GameService {
                 }
                 logger.info("Player {} answered correctly.", answeringPlayer);
             }
-            // Toggle turn for the next round.
+            // Switch turn
             currentPlayerTurn = (answeringPlayer == 1) ? 2 : 1;
+
             message = (isCorrect
                     ? "Player " + answeringPlayer + " answered correctly! "
                     : "Player " + answeringPlayer + " answered incorrectly! ")
                     + "Next turn: Player " + currentPlayerTurn + ".";
         } else {
-            // PVC mode: update global correct counter.
+            // PvC
             if (!isCorrect) {
                 failureCount++;
                 logger.info("Incorrect answer. Failures: {}/{}", failureCount, MAX_FAILURES);
             } else {
                 correctAnswers++;
-                logger.info("Correct answer! Total correct answers: {}", correctAnswers);
+                logger.info("Correct answer! Total correct: {}", correctAnswers);
             }
+
             message = isCorrect
                     ? "Correct answer! Total correct: " + correctAnswers + ". Here is your next question."
                     : "Wrong answer. Total correct: " + correctAnswers + ". Here is your next question.";
         }
 
-        // Check if the game has ended.
+        // Check if game ended due to new failure
         if (failureCount >= MAX_FAILURES) {
-            logger.info("Game over! Maximum failures reached.");
             return new GameResponse(false, "Game over! Maximum failures reached.", null, failureCount);
         }
 
-        // Fetch a random question from the selected category.
+        // Fetch the next question
         Optional<Question> nextQuestionOpt = questionService.getRandomQuestionByCategory(selectedCategory);
         Question nextQuestion = nextQuestionOpt.orElse(null);
+
+        // Record start time for the new question if not null
         if (nextQuestion != null) {
-            // Record the start time for the next question.
             int startTime = (int) (System.currentTimeMillis() / 1000);
             questionStartTimeMap.put(nextQuestion.getId(), startTime);
         }
 
-        // Convert 'Question' entity to 'QuestionDTO' (to match GameResponse signature).
         QuestionDTO nextQuestionDto = null;
         if (nextQuestion != null) {
             nextQuestionDto = new QuestionDTO(
@@ -174,17 +192,45 @@ public class GameService {
             );
         }
 
-        // Return a GameResponse with a QuestionDTO (instead of a Question).
         return new GameResponse(isCorrect, message, nextQuestionDto, failureCount);
     }
 
+    /**
+     * Serves (fetches) a new question, records its start time, and returns a DTO.
+     */
+    public QuestionDTO serveNextQuestion() {
+        Optional<Question> nextQuestionOpt = questionService.getRandomQuestionByCategory(selectedCategory);
+        if (!nextQuestionOpt.isPresent()) {
+            return null;
+        }
+
+        Question nextQuestion = nextQuestionOpt.get();
+        int startTime = (int) (System.currentTimeMillis() / 1000);
+        questionStartTimeMap.put(nextQuestion.getId(), startTime);
+
+        logger.info("Serving question ID {} with start time {}.", nextQuestion.getId(), startTime);
+
+        return new QuestionDTO(
+                nextQuestion.getId(),
+                nextQuestion.getText(),
+                nextQuestion.getOptions(),
+                nextQuestion.getCorrectIndex(),
+                nextQuestion.getCategory(),
+                nextQuestion.getDifficulty()
+        );
+    }
+
+    /**
+     * Resets game counters but keeps the selected category.
+     */
     public void resetGame() {
         failureCount = 0;
         correctAnswers = 0;
         player1Correct = 0;
         player2Correct = 0;
-        selectedCategory = null;
+        currentPlayerTurn = 1;
         questionStartTimeMap.clear();
+
         logger.info("Game state reset.");
     }
 
@@ -193,14 +239,17 @@ public class GameService {
     }
 
     public int getCorrectAnswers() {
-        // For PVC mode, return the global correct count.
-        // In PvP mode, you might want to return a combined score or separate scores.
+        // In PvP, total correct is simply the sum of both players’ correct answers
         return gameMode == GameMode.PVC ? correctAnswers : (player1Correct + player2Correct);
     }
 
+    /**
+     * Returns a textual summary of the current game state.
+     */
     public String getGameState() {
         String baseState = "Category: " + (selectedCategory != null ? selectedCategory : "Not selected")
                 + ", Failures: " + failureCount + "/" + MAX_FAILURES;
+
         if (gameMode == GameMode.PVP) {
             return "Game Mode: PvP. " + baseState
                     + ", Player 1 Correct: " + player1Correct

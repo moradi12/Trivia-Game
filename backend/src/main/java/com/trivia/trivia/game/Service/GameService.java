@@ -1,5 +1,4 @@
 package com.trivia.trivia.game.Service;
-
 import com.trivia.trivia.game.DTO.AnswerDTO;
 import com.trivia.trivia.game.DTO.GameResponse;
 import com.trivia.trivia.game.DTO.QuestionDTO;
@@ -101,17 +100,18 @@ public class GameService {
         }
 
         Question question = questionOpt.get();
-        boolean isCorrect =
-                (question.getCorrectIndex() == answerDTO.getSelectedAnswerIndex());
+        boolean isCorrect = (question.getCorrectIndex() == answerDTO.getSelectedAnswerIndex());
 
-        // Single-player scoring logic
+        // Single-player scoring logic with both correct and wrong counts.
         String message;
         if (isCorrect) {
             session.setCorrectCount(session.getCorrectCount() + 1);
-            message = "Correct answer! Total correct: " + session.getCorrectCount();
+            message = "Correct answer! Total correct: " + session.getCorrectCount() +
+                    ", Total wrong: " + session.getFailureCount();
         } else {
             session.setFailureCount(session.getFailureCount() + 1);
-            message = "Wrong answer. Total correct: " + session.getCorrectCount();
+            message = "Wrong answer. Total correct: " + session.getCorrectCount() +
+                    ", Total wrong: " + session.getFailureCount();
         }
 
         // Check if game ended
@@ -142,6 +142,7 @@ public class GameService {
                 session.getFailureCount()
         );
     }
+
 
     /**
      * Helper method to convert a Question entity to QuestionDTO.

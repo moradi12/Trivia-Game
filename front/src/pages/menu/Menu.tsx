@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./menu.css";
 
 const Menu: React.FC = () => {
   const navigate = useNavigate();
 
-  // Local state for game config
   const [gameMode, setGameMode] = useState<string>("PVC");
   const [category, setCategory] = useState<string>("SCIENCE");
 
-  // Player name fields
   const [player1Name, setPlayer1Name] = useState<string>("Alice");
-  const [player2Name, setPlayer2Name] = useState<string>("Bob"); // shown only if PVP
+  const [player2Name, setPlayer2Name] = useState<string>("Bob"); 
 
   const handleStartGame = () => {
-    // Build query params
-    // If PVP, we include player2Name. If PVC, we can skip or leave it blank
     let path = `/game?mode=${gameMode}&category=${category}&player1Name=${player1Name}`;
     if (gameMode === "PVP") {
       path += `&player2Name=${player2Name}`;
@@ -56,10 +53,7 @@ const Menu: React.FC = () => {
       <label>Choose a Category:</label>
       <select value={category} onChange={(e) => setCategory(e.target.value)}>
         <option value="SPORT">Sports</option>
-        <option value="ACTUALITY">Actuality</option>
         <option value="COUNTRIES">Countries</option>
-        <option value="POLITICS">Politics</option>
-        <option value="FLAGS">Flags</option>
         <option value="ENTERTAINMENT">Entertainment</option>
         <option value="HISTORY">History</option>
         <option value="SCIENCE">Science</option>

@@ -1,40 +1,113 @@
+/* Define global CSS variables for theming and consistency */
+:root {
+  --font-family: Arial, sans-serif;
+  --body-bg-color: #f5f5f5;
+  --text-color: #333;
+  --heading-color: #222;
+  --link-color: #007bff;
+  --link-hover-color: #0056b3;
+  --container-bg: #ffffff;
+  --container-padding: 20px;
+  --container-margin: 20px auto;
+  --container-max-width: 600px;
+  --container-border-radius: 10px;
+  --container-box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  --button-padding: 10px;
+  --button-margin: 5px;
+  --button-font-size: 16px;
+  --button-border-radius: 5px;
+  --button-selected-bg: lightblue;
+  --button-hover-bg: #ddd;
+  --paragraph-line-height: 1.6;
+  --transition-duration: 0.3s;
+}
+
+/* Global body styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f5f5f5;
+  font-family: var(--font-family);
+  background-color: var(--body-bg-color);
+  color: var(--text-color);
   text-align: center;
-}
-
-.question-container {
-  background: white;
-  padding: 20px;
-  margin: 20px auto;
-  width: 50%;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-ul {
-  list-style: none;
+  margin: 0;
   padding: 0;
 }
 
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--heading-color);
+  margin-top: 0;
+}
+p {
+  line-height: var(--paragraph-line-height);
+  margin: 1rem 0;
+}
+
+/* Styling for the question container */
+.question-container {
+  background-color: var(--container-bg);
+  padding: var(--container-padding);
+  margin: var(--container-margin);
+  max-width: var(--container-max-width);
+  border-radius: var(--container-border-radius);
+  box-shadow: var(--container-box-shadow);
+}
+
+/* Remove default list styles */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Spacing for list items */
 li {
   margin: 10px 0;
 }
 
+/* General button styling */
 button {
-  padding: 10px;
-  margin: 5px;
-  font-size: 16px;
+  padding: var(--button-padding);
+  margin: var(--button-margin);
+  font-size: var(--button-font-size);
   cursor: pointer;
   border: none;
-  border-radius: 5px;
+  border-radius: var(--button-border-radius);
+  transition: background-color var(--transition-duration) ease,
+              transform var(--transition-duration) ease;
 }
 
+/* Style for the selected button state */
 button.selected {
-  background-color: lightblue;
+  background-color: var(--button-selected-bg);
 }
 
+/* Hover effect for buttons */
 button:hover {
-  background-color: #ddd;
+  background-color: var(--button-hover-bg);
+  transform: scale(1.02);
+}
+
+/* Additional link styling */
+a {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: color var(--transition-duration) ease;
+}
+a:hover {
+  color: var(--link-hover-color);
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .question-container {
+    padding: 15px;
+    margin: 15px;
+  }
+  h1 {
+    font-size: 1.5rem;
+  }
+  p, li, button {
+    font-size: 14px;
+  }
 }

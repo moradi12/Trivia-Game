@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import "./questionComponent.css";
+
 import {
   GameResponse,
   startGameSession,
@@ -10,83 +12,120 @@ interface Question {
   id: number;
   text: string;
   options: string[];
-  correctIndex: number; // Not typically shown to user
+  correctIndex: number; 
   category: string;
   difficulty?: string;
 }
 
 const QuestionComponent: React.FC = () => {
-  // We read query params to decide game mode / category / players
   const [searchParams] = useSearchParams();
-  const gameMode = searchParams.get("mode") || "PVC"; // or "PVP"
+  const gameMode = searchParams.get("mode") || "PVC";
   const category = searchParams.get("category") || "SCIENCE";
   const player1Name = searchParams.get("player1Name") || "Player1";
-  const player2Name = searchParams.get("player2Name") || ""; // optional
+  const player2Name = searchParams.get("player2Name") || "";
 
-  // Local state
-  const [sessionId, setSessionId] = useState<string>("");
+  const [sessionId, setSessionId] = useState("");
   const [question, setQuestion] = useState<Question | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
-  const [message, setMessage] = useState<string>("");
+  const [infoMessage, setInfoMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [timeRemaining, setTimeRemaining] = useState(30);
 
-  // 1) Start the game session on mount + fetch first question
-  const startGame = useCallback(async () => {
+  const updateFromResponse = (response: GameResponse) => {
+    if (response.sessionId) {
+      setSessionId(response.sessionId);
+    }
+    setQuestion(response.question || null);
+    setInfoMessage(response.message || "");
+  };
+
+  /**
+   * Starts the game session on mount and fetches the first question.
+   */
+  const startNewGameSession = useCallback(async () => {
     try {
-      setMessage("Starting game session...");
-      // call back-end: /api/game/start?mode=..&category=..&player1Name=..&player2Name=..
-      const response: GameResponse = await startGameSession(gameMode, category, player1Name, player2Name);
-      setSessionId(response.sessionId || "");
-      if (response.question) {
-        setQuestion(response.question);
-        setMessage(response.message || "");
-      } else {
-        // If no question, might be game over or no questions in DB
-        setQuestion(null);
-        setMessage(response.message || "No questions found.");
-      }
+      setIsLoading(true);
+      setInfoMessage("Starting game session...");
+
+      const response: GameResponse = await startGameSession(
+        gameMode,
+        category,
+        player1Name,
+        player2Name
+      );
+      updateFromResponse(response);
     } catch (error) {
       console.error("Error starting session:", error);
-      setMessage("Error starting game. Please try again.");
+      setInfoMessage("Error starting game. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   }, [gameMode, category, player1Name, player2Name]);
 
   useEffect(() => {
-    startGame();
-  }, [startGame]);
+    startNewGameSession();
+  }, [startNewGameSession]);
 
-  // 2) Submit an answer
-  const handleAnswerSubmit = async () => {
-    if (!question || selectedOption === null) return;
+  const handleSubmitAnswer = async () => {
+    if (!question) return;
+    // Use -1 to indicate that no option was selected (timeout).
+    const answerIndex = selectedOption !== null ? selectedOption : -1;
+
     try {
-      // call /api/game/answer?sessionId=... with body: { questionId, selectedAnswerIndex }
       const response: GameResponse = await submitAnswerForSession(
         sessionId,
         question.id,
-        selectedOption
+        answerIndex
       );
-      setMessage(response.message);
-
-      // If the response contains a next question, show it
+      updateFromResponse(response);
+      // Reset the selected option for new question.
       if (response.question) {
-        setQuestion(response.question);
         setSelectedOption(null);
-      } else {
-        // Possibly game over or no more questions
-        setQuestion(null);
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
-      setMessage("Error submitting answer. Please try again.");
+      setInfoMessage("Error submitting answer. Please try again.");
     }
   };
 
+  /**
+   * Countdown timer: resets when a new question is loaded and auto-submits on timeout.
+   */
+  useEffect(() => {
+    if (!question) return;
+
+    // Reset timer to 30 seconds when a new question loads.
+    setTimeRemaining(30);
+    const intervalId = setInterval(() => {
+      setTimeRemaining((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(intervalId);
+          handleSubmitAnswer();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [question]);
+
   return (
     <div className="question-container">
+      {/* Basic game info */}
       <h2>Game Mode: {gameMode}</h2>
       <h3>Category: {category}</h3>
       {sessionId && <p>Session ID: {sessionId}</p>}
 
-      {question ? (
+      {/* Loading Indicator */}
+      {isLoading && <p className="loading-message">Loading...</p>}
+
+      {/* Timer display */}
+      {!isLoading && question && (
+        <p className="timer">Time Remaining: {timeRemaining} sec</p>
+      )}
+
+      {!isLoading && question ? (
         <>
           <h2>{question.text}</h2>
           <ul>
@@ -101,18 +140,15 @@ const QuestionComponent: React.FC = () => {
               </li>
             ))}
           </ul>
-          <button
-            onClick={handleAnswerSubmit}
-            disabled={selectedOption === null}
-          >
+          <button onClick={handleSubmitAnswer} disabled={selectedOption === null}>
             Submit Answer
           </button>
         </>
       ) : (
-        <p>No question loaded. {message}</p>
+        !isLoading && <p>{infoMessage}</p>
       )}
 
-      {message && <p>{message}</p>}
+      {infoMessage && !isLoading && <p>{infoMessage}</p>}
     </div>
   );
 };

@@ -1,23 +1,37 @@
+/* Define custom properties for consistent styling */
+:root {
+  --max-width: 80rem; /* 1280px assuming base 16px font size */
+  --padding: 2rem;
+  --transition-duration: 300ms;
+  --logo-shadow-default: #646cffaa;
+  --logo-shadow-react: #61dafbaa;
+  --read-docs-color: #888;
+}
+
 #root {
-  max-width: 1280px;
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 2rem;
+  padding: var(--padding);
   text-align: center;
 }
 
+/* Logo styles with hover effects */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+  transition: filter var(--transition-duration);
 }
 
+.logo:hover {
+  filter: drop-shadow(0 0 2em var(--logo-shadow-default));
+}
+
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em var(--logo-shadow-react));
+}
+
+/* Logo spin animation */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -27,16 +41,19 @@
   }
 }
 
+/* Only apply animation if user has not indicated a preference for reduced motion.
+   Consider using a specific class instead of relying on nth-of-type for better clarity. */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Card and read-the-docs styles */
 .card {
   padding: 2em;
 }
 
 .read-the-docs {
-  color: #888;
+  color: var(--read-docs-color);
 }

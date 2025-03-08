@@ -1,0 +1,100 @@
+/* menu.css */
+
+/* Define CSS variables for theme consistency */
+:root {
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --bg-color: #f5f5f5;
+    --container-bg: #ffffff;
+    --text-color: #333;
+    --padding: 1rem;
+    --border-radius: 8px;
+    --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+  }
+  
+  /* Global styling for the Menu component area */
+  body {
+    font-family: Arial, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Menu container styling */
+  .menu-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: var(--container-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: left;
+  }
+  
+  /* Centered title */
+  .menu-container h1 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Styling for labels */
+  .menu-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+  }
+  
+  /* Styling for select elements */
+  .menu-container select {
+    width: 100%;
+    padding: var(--padding);
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+  }
+  
+  /* Styling for input fields */
+  .menu-container input {
+    width: 100%;
+    padding: var(--padding);
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    font-size: 1rem;
+  }
+  
+  /* Optional container for player names */
+  .menu-container .player-names {
+    margin-bottom: 1rem;
+  }
+  
+  /* Button styling */
+  .menu-container button {
+    width: 100%;
+    padding: var(--padding);
+    font-size: 1rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+  }
+  
+  /* Button hover effect */
+  .menu-container button:hover {
+    background-color: var(--primary-hover);
+  }
+  
+  /* Responsive adjustments for smaller screens */
+  @media (max-width: 600px) {
+    .menu-container {
+      margin: 1rem;
+      padding: 1rem;
+    }
+  }
+  

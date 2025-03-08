@@ -1,42 +1,78 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { fetchRandomQuestion, submitAnswer } from "../../utiles/api";
-import { Question } from "../interface/Question";
+import {
+  GameResponse,
+  startGameSession,
+  submitAnswerForSession,
+} from "../../utiles/api";
+
+interface Question {
+  id: number;
+  text: string;
+  options: string[];
+  correctIndex: number; // Not typically shown to user
+  category: string;
+  difficulty?: string;
+}
 
 const QuestionComponent: React.FC = () => {
+  // We read query params to decide game mode / category / players
   const [searchParams] = useSearchParams();
-  const gameMode = searchParams.get("mode") || "PvC";
+  const gameMode = searchParams.get("mode") || "PVC"; // or "PVP"
   const category = searchParams.get("category") || "SCIENCE";
+  const player1Name = searchParams.get("player1Name") || "Player1";
+  const player2Name = searchParams.get("player2Name") || ""; // optional
 
+  // Local state
+  const [sessionId, setSessionId] = useState<string>("");
   const [question, setQuestion] = useState<Question | null>(null);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [message, setMessage] = useState<string>("");
 
-  const loadQuestion = useCallback(async () => {
+  // 1) Start the game session on mount + fetch first question
+  const startGame = useCallback(async () => {
     try {
-      console.log("Fetching question for category:", category);
-      const data: Question = await fetchRandomQuestion(category);
-      setQuestion(data);
-      setSelectedOption(null);
-      setMessage("");
+      setMessage("Starting game session...");
+      // call back-end: /api/game/start?mode=..&category=..&player1Name=..&player2Name=..
+      const response: GameResponse = await startGameSession(gameMode, category, player1Name, player2Name);
+      setSessionId(response.sessionId || "");
+      if (response.question) {
+        setQuestion(response.question);
+        setMessage(response.message || "");
+      } else {
+        // If no question, might be game over or no questions in DB
+        setQuestion(null);
+        setMessage(response.message || "No questions found.");
+      }
     } catch (error) {
-      console.error("Error fetching question:", error);
-      setMessage("Error loading question. Please try again.");
+      console.error("Error starting session:", error);
+      setMessage("Error starting game. Please try again.");
     }
-  }, [category]);
+  }, [gameMode, category, player1Name, player2Name]);
 
   useEffect(() => {
-    loadQuestion();
-  }, [loadQuestion]);
+    startGame();
+  }, [startGame]);
 
+  // 2) Submit an answer
   const handleAnswerSubmit = async () => {
-    if (selectedOption === null || !question) return;
+    if (!question || selectedOption === null) return;
     try {
-      console.log("Submitting answer for category:", category);
-      const response = await submitAnswer(question.id, selectedOption, category);
+      // call /api/game/answer?sessionId=... with body: { questionId, selectedAnswerIndex }
+      const response: GameResponse = await submitAnswerForSession(
+        sessionId,
+        question.id,
+        selectedOption
+      );
       setMessage(response.message);
-      if (response.correct) {
-        loadQuestion();
+
+      // If the response contains a next question, show it
+      if (response.question) {
+        setQuestion(response.question);
+        setSelectedOption(null);
+      } else {
+        // Possibly game over or no more questions
+        setQuestion(null);
       }
     } catch (error) {
       console.error("Error submitting answer:", error);
@@ -48,6 +84,8 @@ const QuestionComponent: React.FC = () => {
     <div className="question-container">
       <h2>Game Mode: {gameMode}</h2>
       <h3>Category: {category}</h3>
+      {sessionId && <p>Session ID: {sessionId}</p>}
+
       {question ? (
         <>
           <h2>{question.text}</h2>
@@ -63,14 +101,18 @@ const QuestionComponent: React.FC = () => {
               </li>
             ))}
           </ul>
-          <button onClick={handleAnswerSubmit} disabled={selectedOption === null}>
+          <button
+            onClick={handleAnswerSubmit}
+            disabled={selectedOption === null}
+          >
             Submit Answer
           </button>
-          {message && <p>{message}</p>}
         </>
       ) : (
-        <p>Loading question...</p>
+        <p>No question loaded. {message}</p>
       )}
+
+      {message && <p>{message}</p>}
     </div>
   );
 };

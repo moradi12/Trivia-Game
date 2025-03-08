@@ -4,7 +4,7 @@ export interface Question {
   id: number;
   text: string;
   options: string[];
-  correctIndex: number; // typically hidden from user
+  correctIndex: number;
   category: string;
   difficulty?: string;
 }
@@ -14,12 +14,14 @@ export interface GameResponse {
   message: string;
   question: Question | null;
   failures: number;
-  sessionId?: string; // if included
+  sessionId?: string;
+  // Additional fields for extended UI feedback
+  roundNumber?: number;
+  currentPlayerTurn?: string; // e.g., "Player1" or "Player2"
+  player1Score?: number;
+  player2Score?: number;
 }
 
-/**
- * 1) Start a new game session, retrieving the first question
- */
 export const startGameSession = async (
   mode: string,
   category: string,
@@ -34,27 +36,33 @@ export const startGameSession = async (
   if (player2Name) {
     params.append("player2Name", player2Name);
   }
-
   const response = await axios.post(url + "?" + params.toString());
   return response.data as GameResponse;
 };
 
-/**
- * 2) Submit an answer for the current question in the session
- */
 export const submitAnswerForSession = async (
   sessionId: string,
   questionId: number,
   selectedAnswerIndex: number
 ): Promise<GameResponse> => {
   const url = `http://localhost:8080/api/game/answer?sessionId=${sessionId}`;
-
   const body = {
     questionId,
     selectedAnswerIndex,
-    // Not including category here unless your server demands it
+    // Optionally include other fields if required by the backend.
   };
-
   const response = await axios.post(url, body);
+  return response.data as GameResponse;
+};
+
+/**
+ * joinGameSession allows a player to join an existing game by providing the gameId and their name.
+ */
+export const joinGameSession = async (
+  gameId: string,
+  player2Name: string
+): Promise<GameResponse> => {
+  const url = `http://localhost:8080/api/game/join?gameId=${gameId}&player2Name=${player2Name}`;
+  const response = await axios.post(url);
   return response.data as GameResponse;
 };

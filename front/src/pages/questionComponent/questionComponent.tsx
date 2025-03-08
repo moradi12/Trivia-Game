@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import ScoreBoard from "./../ScoreBoard/ScoreBoard"; // Adjust import path if needed
 import "./questionComponent.css";
 
 import {
@@ -31,12 +32,23 @@ const QuestionComponent: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(30);
 
+  // Extended state for additional game info
+  const [roundNumber, setRoundNumber] = useState<number | undefined>(undefined);
+  const [currentPlayerTurn, setCurrentPlayerTurn] = useState<string | undefined>(undefined);
+  const [player1Score, setPlayer1Score] = useState<number>(0);
+  const [player2Score, setPlayer2Score] = useState<number>(0);
+
   const updateFromResponse = (response: GameResponse) => {
     if (response.sessionId) {
       setSessionId(response.sessionId);
     }
     setQuestion(response.question || null);
     setInfoMessage(response.message || "");
+    // Update additional fields if present
+    setRoundNumber(response.roundNumber);
+    setCurrentPlayerTurn(response.currentPlayerTurn);
+    setPlayer1Score(response.player1Score ?? 0);
+    setPlayer2Score(response.player2Score ?? 0);
   };
 
   /**
@@ -46,7 +58,6 @@ const QuestionComponent: React.FC = () => {
     try {
       setIsLoading(true);
       setInfoMessage("Starting game session...");
-
       const response: GameResponse = await startGameSession(
         gameMode,
         category,
@@ -70,7 +81,6 @@ const QuestionComponent: React.FC = () => {
     if (!question) return;
     // Use -1 to indicate that no option was selected (timeout).
     const answerIndex = selectedOption !== null ? selectedOption : -1;
-
     try {
       const response: GameResponse = await submitAnswerForSession(
         sessionId,
@@ -88,13 +98,8 @@ const QuestionComponent: React.FC = () => {
     }
   };
 
-  /**
-   * Countdown timer: resets when a new question is loaded and auto-submits on timeout.
-   */
   useEffect(() => {
     if (!question) return;
-
-    // Reset timer to 30 seconds when a new question loads.
     setTimeRemaining(30);
     const intervalId = setInterval(() => {
       setTimeRemaining((prevTime) => {
@@ -106,21 +111,28 @@ const QuestionComponent: React.FC = () => {
         return prevTime - 1;
       });
     }, 1000);
-
     return () => clearInterval(intervalId);
   }, [question]);
 
   return (
     <div className="question-container">
-      {/* Basic game info */}
       <h2>Game Mode: {gameMode}</h2>
       <h3>Category: {category}</h3>
       {sessionId && <p>Session ID: {sessionId}</p>}
 
-      {/* Loading Indicator */}
-      {isLoading && <p className="loading-message">Loading...</p>}
+      {/* Display ScoreBoard in PvP mode */}
+      {gameMode === "PVP" && (
+        <ScoreBoard
+          roundNumber={roundNumber}
+          currentPlayerTurn={currentPlayerTurn}
+          player1Name={player1Name}
+          player1Score={player1Score}
+          player2Name={player2Name}
+          player2Score={player2Score}
+        />
+      )}
 
-      {/* Timer display */}
+      {isLoading && <p className="loading-message">Loading...</p>}
       {!isLoading && question && (
         <p className="timer">Time Remaining: {timeRemaining} sec</p>
       )}

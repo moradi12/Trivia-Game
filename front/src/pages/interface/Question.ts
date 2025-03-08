@@ -3,6 +3,6 @@ export interface Question {
     text: string;
     options: string[];
     correctIndex: number;
-    category: string;     // Serialized enums become strings
+    category: string;     
     difficulty: string;
 }

@@ -1,4 +1,5 @@
 package com.trivia.trivia.game.Service;
+
 import com.trivia.trivia.game.Entity.Category;
 import com.trivia.trivia.game.Entity.Difficulty;
 import com.trivia.trivia.game.Entity.Question;
@@ -58,9 +59,11 @@ public class QuestionService {
         List<Question> questions = questionRepository.findByCategory(category);
         return questions.isEmpty() ? Optional.empty() : Optional.of(questions.get(random.nextInt(questions.size())));
     }
+
     public List<Question> getAllQuestions() {
         return questionRepository.findAll();
     }
+
     public Page<Question> getQuestionsPaged(int page, int size) {
         return questionRepository.findAll(PageRequest.of(page, size));
     }
@@ -73,12 +76,27 @@ public class QuestionService {
         return questionRepository.existsByText(text);
     }
 
+    /**
+     * Adds a new question if it does not already exist.
+     */
     public Question addQuestion(Question question) {
         if (!questionExists(question.getText())) {
             return questionRepository.save(question);
         } else {
             throw new IllegalArgumentException("Question already exists!");
         }
+    }
+
+    /**
+     * Updates an existing question.
+     * This uses save() which performs an update if the question ID exists.
+     */
+    public Question updateQuestion(Question question) {
+        if (!questionRepository.existsById(question.getId())) {
+            throw new IllegalArgumentException("Question with ID " + question.getId() + " does not exist!");
+        }
+        logger.info("Updating question with ID {}", question.getId());
+        return questionRepository.save(question);
     }
 
     public boolean deleteQuestionById(int id) {
@@ -102,6 +120,7 @@ public class QuestionService {
         return questionRepository.findAll().stream()
                 .collect(Collectors.groupingBy(Question::getCategory, Collectors.counting()));
     }
+
     public List<Question> findSimilarQuestions(String text) {
         return questionRepository.findAll().stream()
                 .filter(q -> calculateLevenshteinDistance(q.getText(), text) < 5)

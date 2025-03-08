@@ -10,12 +10,13 @@ public class AnswerDTO {
     private int questionId;
     private int selectedAnswerIndex;
     private Category category;
+    private String playerId;
     public AnswerDTO() { }
 
-    public AnswerDTO(int questionId, int selectedAnswerIndex, Category category) {
+    public AnswerDTO(int questionId, int selectedAnswerIndex, Category category, String playerId) {
         this.questionId = questionId;
         this.selectedAnswerIndex = selectedAnswerIndex;
         this.category = category;
+        this.playerId = playerId;
     }
-
 }

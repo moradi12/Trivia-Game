@@ -1,4 +1,5 @@
 package com.trivia.trivia.game.Service;
+
 import com.trivia.trivia.game.DTO.AnswerDTO;
 import com.trivia.trivia.game.DTO.GameResponse;
 import com.trivia.trivia.game.DTO.QuestionDTO;
@@ -26,19 +27,14 @@ public class GameService {
      * Serve the next question for a given game session.
      */
     public QuestionDTO serveNextQuestion(GameSession session) {
-        // fetch random question from the selected category
-        Optional<Question> nextQuestionOpt =
-                questionService.getRandomQuestionByCategory(session.getSelectedCategory());
+        Optional<Question> nextQuestionOpt = questionService.getRandomQuestionByCategory(session.getSelectedCategory());
         if (!nextQuestionOpt.isPresent()) {
             return null;
         }
 
         Question nextQ = nextQuestionOpt.get();
-        session.getQuestionStartTimeMap()
-                .put(nextQ.getId(), (int) (System.currentTimeMillis() / 1000));
-
+        session.getQuestionStartTimeMap().put(nextQ.getId(), (int) (System.currentTimeMillis() / 1000));
         logger.info("Serving question ID {} for session {}", nextQ.getId(), session.getSessionName());
-
         return toQuestionDTO(nextQ);
     }
 
@@ -46,7 +42,7 @@ public class GameService {
      * Process the answer for the current question in a session.
      */
     public GameResponse processAnswer(GameSession session, AnswerDTO answerDTO) {
-        // If game is already over
+        // Check if game is already over
         if (session.getFailureCount() >= session.getMaxFailures()) {
             return new GameResponse(
                     false,
@@ -56,7 +52,7 @@ public class GameService {
             );
         }
 
-        // Retrieve question start time
+        // Retrieve and remove the question start time for the current question
         Integer startTime = session.getQuestionStartTimeMap().remove(answerDTO.getQuestionId());
         if (startTime == null) {
             return new GameResponse(
@@ -67,11 +63,10 @@ public class GameService {
             );
         }
 
-        // Check time limit
+        // Check if the answer was submitted within the time limit
         int elapsed = (int) (System.currentTimeMillis() / 1000) - startTime;
         if (elapsed > TIME_LIMIT_SECONDS) {
-            session.setFailureCount(session.getFailureCount() + 1);
-
+            session.incrementFailureCount();
             if (session.getFailureCount() >= session.getMaxFailures()) {
                 return new GameResponse(
                         false,
@@ -88,7 +83,7 @@ public class GameService {
             );
         }
 
-        // Find question in DB
+        // Look up the question from the database
         Optional<Question> questionOpt = questionService.getQuestionById(answerDTO.getQuestionId());
         if (!questionOpt.isPresent()) {
             return new GameResponse(
@@ -102,19 +97,19 @@ public class GameService {
         Question question = questionOpt.get();
         boolean isCorrect = (question.getCorrectIndex() == answerDTO.getSelectedAnswerIndex());
 
-        // Single-player scoring logic with both correct and wrong counts.
+        // Process answer and update scores for single-player mode
         String message;
         if (isCorrect) {
-            session.setCorrectCount(session.getCorrectCount() + 1);
+            session.incrementCorrectCount();
             message = "Correct answer! Total correct: " + session.getCorrectCount() +
                     ", Total wrong: " + session.getFailureCount();
         } else {
-            session.setFailureCount(session.getFailureCount() + 1);
+            session.incrementFailureCount();
             message = "Wrong answer. Total correct: " + session.getCorrectCount() +
                     ", Total wrong: " + session.getFailureCount();
         }
 
-        // Check if game ended
+        // Check if game ended after processing the answer
         if (session.getFailureCount() >= session.getMaxFailures()) {
             return new GameResponse(
                     false,
@@ -124,7 +119,7 @@ public class GameService {
             );
         }
 
-        // Serve next question
+        // Serve the next question
         QuestionDTO nextQuestion = serveNextQuestion(session);
         if (nextQuestion == null) {
             return new GameResponse(
@@ -143,9 +138,8 @@ public class GameService {
         );
     }
 
-
     /**
-     * Helper method to convert a Question entity to QuestionDTO.
+     * Helper method to convert a Question entity to a QuestionDTO.
      */
     private QuestionDTO toQuestionDTO(Question q) {
         return new QuestionDTO(

@@ -7,14 +7,15 @@ import com.trivia.trivia.game.Entity.Question;
 import com.trivia.trivia.game.Service.QuestionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-@CrossOrigin
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/questions")
 public class QuestionController {
@@ -26,12 +27,12 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-
     @GetMapping("/count")
     public ResponseEntity<Integer> getTotalQuestions() {
         logger.debug("Fetching total question count");
         return ResponseEntity.ok(questionService.getTotalQuestionCount());
     }
+
     @GetMapping("/countByCategory")
     public ResponseEntity<Integer> getQuestionCountByCategory(@RequestParam Category category) {
         if (category == null) {
@@ -41,6 +42,7 @@ public class QuestionController {
         logger.info("Fetching question count for category: {}", category);
         return ResponseEntity.ok(questionService.getQuestionCountByCategory(category));
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<QuestionDTO> getQuestionById(@PathVariable int id) {
         logger.info("Fetching question with ID: {}", id);
@@ -51,6 +53,7 @@ public class QuestionController {
                     return ResponseEntity.notFound().build();
                 });
     }
+
     @GetMapping("/random")
     public ResponseEntity<QuestionDTO> getRandomQuestion() {
         Optional<Question> question = questionService.getRandomQuestion();
@@ -60,6 +63,7 @@ public class QuestionController {
                     return ResponseEntity.notFound().build();
                 });
     }
+
     @GetMapping("/randomByCategory")
     public ResponseEntity<QuestionDTO> getRandomQuestionByCategory(@RequestParam Category category) {
         Optional<Question> question = questionService.getRandomQuestionByCategory(category);
@@ -69,18 +73,22 @@ public class QuestionController {
                     return ResponseEntity.notFound().build();
                 });
     }
+
     @GetMapping("/all")
     public ResponseEntity<List<Question>> getAllQuestions() {
         return ResponseEntity.ok(questionService.getAllQuestions());
     }
+
     @GetMapping("/difficulty/{difficulty}")
     public ResponseEntity<List<Question>> getQuestionsByDifficulty(@PathVariable Difficulty difficulty) {
         return ResponseEntity.ok(questionService.getQuestionsByDifficulty(difficulty));
     }
+
     @GetMapping("/categoryCounts")
     public ResponseEntity<Map<Category, Long>> getQuestionCountByCategories() {
         return ResponseEntity.ok(questionService.getQuestionCountByCategories());
     }
+
     @PostMapping("/add")
     public ResponseEntity<QuestionDTO> addQuestion(@RequestBody QuestionDTO questionDTO) {
         logger.info("Adding new question: {}", questionDTO);
@@ -92,7 +100,33 @@ public class QuestionController {
         return ResponseEntity.ok(convertToDTO(savedQuestion));
     }
 
-    // ✅ 🔟 Delete a question by ID
+    /**
+     * Update an existing question.
+     */
+    @PutMapping("/update")
+    public ResponseEntity<QuestionDTO> updateQuestion(@RequestBody QuestionDTO questionDTO) {
+        logger.info("Updating question: {}", questionDTO);
+        if (questionDTO.getId() <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        Optional<Question> existingQuestion = questionService.getQuestionById(questionDTO.getId());
+        if (existingQuestion.isEmpty()) {
+            logger.warn("Question with ID {} not found", questionDTO.getId());
+            return ResponseEntity.notFound().build();
+        }
+        Question updatedQuestion = questionService.updateQuestion(convertToEntity(questionDTO));
+        return ResponseEntity.ok(convertToDTO(updatedQuestion));
+    }
+
+    /**
+     * Get paginated questions.
+     */
+    @GetMapping("/paged")
+    public ResponseEntity<Page<Question>> getQuestionsPaged(@RequestParam int page, @RequestParam int size) {
+        return ResponseEntity.ok(questionService.getQuestionsPaged(page, size));
+    }
+
+    // Delete a question by ID.
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteQuestionById(@PathVariable int id) {
         logger.info("Deleting question with ID: {}", id);
@@ -104,7 +138,7 @@ public class QuestionController {
         return ResponseEntity.ok("Question deleted successfully.");
     }
 
-    // ✅ 1️⃣1️⃣ Delete a question by text
+    // Delete a question by text.
     @DeleteMapping("/deleteByText")
     public ResponseEntity<String> deleteQuestionByText(@RequestParam String text) {
         logger.info("Deleting question with text: {}", text);
@@ -118,9 +152,11 @@ public class QuestionController {
         }
         return ResponseEntity.ok("Question deleted successfully.");
     }
+
     @PostMapping("/clear")
     public ResponseEntity<String> clearAllQuestions() {
         questionService.clearAllQuestions();
+        logger.info("All questions have been deleted.");
         return ResponseEntity.ok("All questions deleted.");
     }
 
@@ -129,6 +165,7 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.findSimilarQuestions(text));
     }
 
+    // Helper method to convert a Question entity to a QuestionDTO.
     private QuestionDTO convertToDTO(Question question) {
         return new QuestionDTO(
                 question.getId(),
@@ -140,6 +177,7 @@ public class QuestionController {
         );
     }
 
+    // Helper method to convert a QuestionDTO to a Question entity.
     private Question convertToEntity(QuestionDTO questionDTO) {
         return new Question(
                 questionDTO.getId(),
